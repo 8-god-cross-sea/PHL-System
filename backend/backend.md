@@ -36,6 +36,11 @@ cnpm install
 3. Static page design
 <br>
 
+## About Static pages
+-----
+All the files required are provided in assets, simply copy them to "backend/my-app/src/assets/(css/js/img)". The reference tag are provided in "index.html", copy and paste. Remember to break pages into components(except for login and register) for better coding.
+<br>
+
 ## Update
 -----
 1. Login page design added
