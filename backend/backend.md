@@ -36,6 +36,15 @@ cnpm install
 3. Static page design
 <br>
 
+## Update
+-----
+1. Login page design added
+2. register page design added
+3. general backend page design added
+<br>
+
+
+
 
 ## REFERENCES
 -----

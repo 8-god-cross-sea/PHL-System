@@ -21,7 +21,7 @@ export class CasesComponent implements OnInit {
 
   getCases():void {
     this.caseService.getCases()
-      .subscribe(cases => this.cases = cases);;
+      .subscribe(cases => this.cases = cases);
   }
 
 	ngOnInit() {
