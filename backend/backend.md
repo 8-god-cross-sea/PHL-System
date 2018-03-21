@@ -40,7 +40,7 @@ cnpm install
 -----
 1. Login page design added
 2. register page design added
-3. general backend page design added
+3. general backend page design added 
 <br>
 
 
