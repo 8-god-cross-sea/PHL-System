@@ -8,7 +8,7 @@ import {AppComponent} from './app.component';
 import {ServiceCaseComponent} from './controller/service.case.component';
 import {CasesComponent} from './cases/cases.component';
 import {CaseDetailComponent} from './case-detail/case-detail.component';
-import {AppRoutingModule} from './/app-routing.module';
+import {AppRoutingModule} from './app-routing.module';
 import { AdminComponent } from './controller/administrator.component';
 
 @NgModule({

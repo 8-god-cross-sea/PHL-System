@@ -6,7 +6,7 @@ import {ServiceCaseComponent} from './controller/service.case.component';
 import { AdminComponent } from './controller/administrator.component';
 
 const routes: Routes = [
-	{ path: '', redirectTo: 'cases', pathMatch: 'full' },
+	// { path: '', redirectTo: 'cases', pathMatch: 'full' },
     { path: 'cases', component: CasesComponent },
     { path: 'service_cases', component: ServiceCaseComponent },
 	{ path: 'admin', component: AdminComponent }
