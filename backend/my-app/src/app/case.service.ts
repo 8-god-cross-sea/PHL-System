@@ -46,9 +46,20 @@ export class CaseService {
 
 	}
 
+<<<<<<< HEAD
 	updateHero (hero: Case): Observable<any> {
   		return this.http.put(this.casesUrl, hero, httpOptions).pipe(
     		tap(_ => console.log(``)),
 	  );
 	}
+=======
+	// updateHero (hero: Case): Observable<any> {
+ //  		return this.http.put(this.casesUrl, hero, httpOptions).pipe(
+ //    		tap(_ => console.log(``)),
+ //    		catchError(this.handleError<any>('updateHero'))
+ //  	);
+
+
+
+>>>>>>> origin/master
 }
