@@ -49,9 +49,6 @@ export class CaseService {
 	updateHero (hero: Case): Observable<any> {
   		return this.http.put(this.casesUrl, hero, httpOptions).pipe(
     		tap(_ => console.log(``)),
-    		catchError(this.handleError<any>('updateHero'))
-  	);
-
-
-
+	  );
+	}
 }

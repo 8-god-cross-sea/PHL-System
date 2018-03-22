@@ -2,11 +2,13 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { CasesComponent } from './cases/cases.component'
+import { AdminComponent } from './component/administrator/administrator.component';
+
 
 
 const routes: Routes = [
-	{ path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-	{ path: 'cases', component: CasesComponent }
+	//{ path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+	{ path: 'admin', component: AdminComponent }
 ];
 
 @NgModule({
