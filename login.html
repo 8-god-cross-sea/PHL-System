@@ -82,12 +82,16 @@
         $.ajax({
             type: "POST",//方法类型
             dataType: "json",//预期服务器返回的数据类型
+            crossDomain:true,
             contentType: 'application/json',
-            url: "http://frozen-retreat-73403.herokuapp.com/api/user/login" ,//url
+            url: "https://phls.herokuapp.com/api/user/login" ,//url
             data: JSON.stringify({
                 "username":username,
                 "password":password,
             }),
+            xhrFields:{
+                withCredentials:true
+            },
             success: function (result) {
                 console.log(result);//打印服务端返回的数据(调试用)
                 if (result.ret_code == 0) {
