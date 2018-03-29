@@ -4,7 +4,7 @@ $('#loginBTN').click(function() {
     var username = $('input[type=email]').val();
     var password = $('input[type=password]').val();
 
-    login(username, password, successLogin, errorLogin);
+    USER.login(username, password, successLogin, errorLogin);
 
     function successLogin(data) {
         alert("登陆成功！");
