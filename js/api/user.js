@@ -1,46 +1,45 @@
 'use strict';
 
 var USER ={};
+USER.info = {};
 
-USER.login = function (username, password, callback, errCallback) {
+USER.login = function (username, password) {
     var url = "http://frozen-retreat-73403.herokuapp.com/api/user/login";
     var data = {
         username: username,
         password: password
     };
 
-    function onSuccess(data) {
-        callback(data);
-    }
-
-    function onError(data) {
-        if (data.status == 200) {
-            callback(data);
-        } else {
-            errCallback(data);
-        }
-    }
-
-    AJAX.post(url, data, onSuccess, onError);
+    return new Promise(function(resolve, reject) {
+        AJAX.post(url, data)
+        .then(function(data) {
+            if (data.ret_code != 0){
+                reject(data);
+            }
+            resolve(data);
+        })
+        .catch(function(data) {
+            reject(data);
+        });
+    });
 }
 
-USER.logout = function (callback) {
+USER.logout = function () {
     var url = "http://frozen-retreat-73403.herokuapp.com/api/user/logout";
     var data = null;
 
-    function onSuccess(data) {
-        callback(data);
-    }
-
-    function onError(data) {
-        if (data.status == 200) {
-            callback(data);
-        } else {
-            errCallback(data);
-        }
-    }
-
-    AJAX.post(url, data, onSuccess, onError);
+    return new Promise(function(resolve, reject) {
+        AJAX.post(url, data)
+        .then(function(data) {
+            if (data.ret_code != 0){
+                reject(data);
+            }
+            resolve(data);
+        })
+        .catch(function(data) {
+            reject(data);
+        });
+    });
 }
 
 USER.register = function (username, password, callback, errCallback) {
@@ -49,62 +48,73 @@ USER.register = function (username, password, callback, errCallback) {
         .replace("{{username}}", username)
         .replace("{{password}}", password);
 
-    function onSuccess(data) {
-        callback(data);
-    }
-
-    function onError(data) {
-        errCallback(data);
-    }
-
-    ajaxPost(url, data, onSuccess, onError);
+    return new Promise(function(resolve, reject) {
+        AJAX.post(url, data)
+        .then(function(data) {
+            if (data.ret_code != 0){
+                reject(data);
+            }
+            resolve(data);
+        })
+        .catch(function(data) {
+            reject(data);
+        });
+    });
 }
 
-USER.getInfo = function (userId, callback, errCallback) {
+USER.info.get = function (userId, callback, errCallback) {
     var url = "http://frozen-retreat-73403.herokuapp.com/api/user/{{userId}}"
         .replace("{{userId}}", userId);
 
-    function onSuccess(data) {
-        callback(data);
-    }
-
-    function onError(data) {
-        errCallback(data);
-    }
-
-    AJAX.get(url, onSuccess, onError);
+    return new Promise(function(resolve, reject) {
+        AJAX.get(url, data)
+        .then(function(data) {
+            if (data.ret_code != 0){
+                reject(data);
+            }
+            resolve(data);
+        })
+        .catch(function(data) {
+            reject(data);
+        });
+    });
 }
 
-USER.updateInfo = function (email, callback, errCallback) {
+USER.info.update = function (email, callback, errCallback) {
     var url = "http://frozen-retreat-73403.herokuapp.com/api/user/{{userId}}"
         .replace("{{userId}}", userId);
     var data = "email={{email}}}"
         .replace("{{email}}",email)
 
-
-    function onSuccess(data) {
-        callback(data);
-    }
-
-    function onError(data) {
-        errCallback(data);
-    }
-
-    ajaxPut(url, data, onSuccess, onError);
+    return new Promise(function(resolve, reject) {
+        AJAX.put(url, data)
+        .then(function(data) {
+            if (data.ret_code != 0){
+                reject(data);
+            }
+            resolve(data);
+        })
+        .catch(function(data) {
+            reject(data);
+        });
+    });
 }
 
-USER.deleteInfo = function (userId, callback, errCallback) {
+USER.info.delete = function (userId, callback, errCallback) {
     var url = "http://frozen-retreat-73403.herokuapp.com/api/user/{{userId}}"
         .replace("{{userId}}", userId);
 
 
-    function onSuccess(data) {
-        callback(data);
-    }
-
-    function onError(data) {
-        errCallback(data);
-    }
-
-    AJAX.delete(url, data, onSuccess, onError);
+    return new Promise(function(resolve, reject) {
+        AJAX.delete(url, data)
+        .then(function(data) {
+            if (data.ret_code != 0){
+                reject(data);
+            }
+            resolve(data);
+        })
+        .catch(function(data) {
+            reject(data);
+        });
+    });
 }

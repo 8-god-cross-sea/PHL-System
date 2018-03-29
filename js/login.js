@@ -4,15 +4,26 @@ $('#loginBTN').click(function() {
     var username = $('input[type=email]').val();
     var password = $('input[type=password]').val();
 
-    USER.login(username, password, successLogin, errorLogin);
-
-    function successLogin(data) {
+    USER.login(username, password)
+    .then(function(data){
         alert("登陆成功！");
-        window.location.href = "../index.html";
+        console.log(data);
+    })
+    .catch(function(data) {
+        alert("登录失败！");
+        console.log(data);
+        return;
+    });
+})
+
+$('#logoutBTN').click(function() {
+    USER.logout(success, error);
+
+    function success(data) {
+        alert("登出成功!");
     }
 
-    function errorLogin(data) {
-        alert("登录失败！");
-        return;
+    function error(data) {
+        alert("登出失败!");
     }
 })
