@@ -164,10 +164,26 @@ desired effect
                 </div>
                 <!-- Sidebar Menu -->
                 <ul class="sidebar-menu" data-widget="tree">
-                    <li class="header">3D医院导览</li>
+                    <li class="header">病例学习</li>
                     <!-- Optionally, you can add icons to the links -->
-                    <li class="active"><a href="#"><i class="fa fa-link"></i> <span>3D医院导览</span></a></li>
-                    <li><a href="#"><i class="fa fa-link"></i> <span>职能学习</span></a></li>
+                    <li><a href="#"><i class="fa fa-link"></i> <span>病例学习</span></a></li>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-link"></i> <span>病例学习</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li class="activate"><a href="#"><i class="fa fa-circle-o"></i>科室管理</a></li>
+                            <li><a href="#"><i class="fa fa-circle-o"></i>人员管理</a></li>
+                            <li><a href="#"><i class="fa fa-circle-o"></i>药品管理</a></li>
+                            <li><a href="#"><i class="fa fa-circle-o"></i>化验管理</a></li>
+                            <li><a href="#"><i class="fa fa-circle-o"></i>疫苗管理</a></li>
+                            <li><a href="#"><i class="fa fa-circle-o"></i>住院管理</a></li>
+                            <li><a href="#"><i class="fa fa-circle-o"></i>宠物管理</a></li>
+                        </ul>
+                    </li>
                     <li><a href="#"><i class="fa fa-link"></i> <span>病例学习</span></a></li>
                     <li><a href="#"><i class="fa fa-link"></i> <span>测试</span></a></li>
                 </ul>
@@ -180,16 +196,54 @@ desired effect
             <!-- Content Header (Page header) -->
             <section class="content-header">
                 <h1>
-                    <p id="header">3D医院导览</p>
-                    <small id ="description">3D医院导览说明</small>
+                    <p id="header">病例学习</p>
+                    <small id ="description">病例学习说明</small>
                 </h1>
             </section>
             <!-- Main content -->
             <section class="content container-fluid">
-                <div style="margin-left: calc(50% - 480px); width: 962px; height: 602px;">
-                    <div id="gameContainer" style="width: 960px; height: 600px;"></div>
+                <div class="box box-widget">
+            <div class="box-header with-border">
+              <div class="user-block">
+                <h4>某某疾病</h4>
+              </div>
+              <!-- /.user-block -->
+<!--               <div class="box-tools">
+                <button type="button" class="btn btn-box-tool" data-toggle="tooltip" title="" data-original-title="Mark as read">
+                  <i class="fa fa-circle-o"></i></button>
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div> -->
+              <!-- /.box-tools -->
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <!-- post text -->
+              <p>这是对这种疾病的说明这是对这种疾病的说明这是对这种疾病的说明这是对这种疾病的说明这是对这种疾病的说明这是对这种疾病的说明这是对这种疾病的说明这是对这种疾病的说明这是对这种疾病的说明这是对这种疾病的说明这是对这种疾病的说明这是对这种疾病的说明这是对这种疾病的说明这是对这种疾病的说明这是对这种疾病的说明这是对这种疾病的说明这是对这种疾病的说明这是对这种疾病的说明这是对这种疾病的说明这是对这种疾病的说明这是对这种疾病的说明</p>
+
+              <img class="img-responsive pad" src="assets/img/photo2.png" alt="Photo">
+
+              <!-- Attachment -->
+              <div class="attachment-block clearfix">
+                <img class="attachment-img" src="assets/img/photo1.png" alt="Attachment Image">
+
+                <div class="attachment-pushed">
+                  <h4 class="attachment-heading"><a href="http://www.lipsum.com/">Lorem ipsum text generator</a></h4>
+
+                  <div class="attachment-text">
+                    Description about the attachment can be placed here.
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry... <a href="#">more</a>
+                  </div>
+                  <!-- /.attachment-text -->
                 </div>
-                <div onclick="gameInstance.SendMessage('JavaScript','HelloWorld')">click to show button</div>
+                <!-- /.attachment-pushed -->
+              </div>
+              <!-- /.attachment-block -->
+
+            </div>
+            <!-- /.box-body -->
+          </div>
             </section>
             <!-- /.content -->
         </div>
@@ -296,13 +350,6 @@ desired effect
      user experience. -->
     <!-- page script -->
 
-
-    <script src="TemplateData/UnityProgress.js"></script>  
-    <script src="Build/UnityLoader.js"></script>
-
-    <script>
-    var gameInstance = UnityLoader.instantiate("gameContainer", "Build/game.json", {onProgress: UnityProgress});
-    </script>
 </body>
 
 </html>
