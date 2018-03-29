@@ -1,5 +1,5 @@
 var base_url = "https://phls.herokuapp.com/api/";
-var description = {
+var data = {
     "user": {
         "header": "用户管理",
         "description": "用于管理用户相关内容",
@@ -11,10 +11,10 @@ var description = {
             "description": "用户名称"
         }, {
             "column": "email", //TMP
-            "description": "Email"
+            "description": "用户密码"
         }, {
-            "column": "join_date", //TMP
-            "description": "加入日期"
+            "column": "operaion",
+            "description": "操作"
         }]
     },
     "department": {
@@ -24,11 +24,25 @@ var description = {
             "column": "id",
             "description": "科室ID"
         }, {
-            "column": "name",
+            "column": "uername",
             "description": "科室名称"
         }, {
-            "column": "description", //TMP
+            "column": "email", //TMP
             "description": "描述"
+        }, {
+            "column": "operaion",
+            "description": "主要负责人"
+        }]
+    },
+    "staff": {
+        "header": "人员管理",
+        "description": "用于管理人员相关内容",
+        "data": [{
+            "column": "id",
+            "description": "人员名称"
+        }, {
+            "column": "uername",
+            "description": "职位"
         }]
     },
     "medicine": {
@@ -36,15 +50,15 @@ var description = {
         "description": "用于管理药品相关内容",
         "data": [{
             "column": "id",
-            "description": "药品ID"
-        }, {
-            "column": "name",
             "description": "中文名称"
         }, {
-            "column": "price", //TMP
+            "column": "uername",
+            "description": "英文名称"
+        }, {
+            "column": "email", //TMP
             "description": "价格"
         }, {
-            "column": "count",
+            "column": "operaion",
             "description": "库存"
         }]
     },
@@ -53,18 +67,9 @@ var description = {
         "description": "用于管理化验相关内容",
         "data": [{
             "column": "id",
-            "description": "化验ID"
-        }, {
-            "column": "patient",
             "description": "宠物ID"
         }, {
-            "column": "wbc",
-            "description": "基本指标"
-        }, {
-            "column": "rbc",
-            "description": "基本指标"
-        }, {
-            "column": "plt",
+            "column": "uername",
             "description": "基本指标"
         }]
     },
@@ -73,15 +78,15 @@ var description = {
         "description": "用于管理疫苗相关内容",
         "data": [{
             "column": "id",
-            "description": "疫苗ID"
-        }, {
-            "column": "name",
             "description": "中文名称"
         }, {
-            "column": "price", //TMP
+            "column": "uername",
+            "description": "英文名称"
+        }, {
+            "column": "email", //TMP
             "description": "价格"
         }, {
-            "column": "count",
+            "column": "operaion",
             "description": "库存"
         }]
     },
@@ -90,19 +95,16 @@ var description = {
         "description": "用于管理住院相关内容",
         "data": [{
             "column": "id",
-            "description": "住院单ID"
-        }, {
-            "column": "patient",
             "description": "宠物ID"
         }, {
-            "column": "join_date", //TMP
+            "column": "uername",
             "description": "入院时间"
         }, {
-            "column": "leave_date",
-            "description": "出院时间"
-        }, {
-            "column": "status",
+            "column": "email", //TMP
             "description": "状态"
+        }, {
+            "column": "operaion",
+            "description": "出院时间"
         }]
     },
     "patient": {
@@ -110,110 +112,79 @@ var description = {
         "description": "用于管理宠物相关内容",
         "data": [{
             "column": "id",
-            "description": "宠物ID"
-        }, {
-            "column": "name",
             "description": "宠物名称"
         }, {
-            "column": "description",
-            "description": "备注"
+            "column": "uername",
+            "description": "描述"
         }]
     },
 }
 
-function update_table(entity, id) {
-    var old = document.getElementById(entity + "_" + id);
-    var tr = "<tr><td>" + old.children[0].innerHTML + "</td>";
-    for (var j = 1; j < description[entity]["data"].length; j++) {
-        tr += "<td><input value=\"" + old.children[j].innerHTML + "\">" + "</td>";
+function initial_table(entity) {
+    document.getElementById("header").innerHTML = data[entity]["header"];
+    document.getElementById("description").innerHTML = data[entity]["description"];
+    var thead = "<tr>";
+    for (var i = 0; i < data[entity]["data"].length; i++) {
+        thead += "<th>" + data[entity]["data"][i]["description"] + "</th>"
     }
-    tr += "<td>" + get_a_label('update_by_id', '修改', [entity, id]) + get_a_label('update_table_cancel', '取消', [entity, id]) + "</td></tr>";
-    document.getElementById(entity + "_" + id).innerHTML = tr;
-}
-
-function add_table(entity) {
-    var tr = "<tr><td></td>";
-    for (var j = 1; j < description[entity]["data"].length; j++) {
-        tr += "<td><input required></td>";
-    }
-    tr += "<td>" + get_a_label('add', '保存', [entity]) + get_a_label('add_table_cancel', '取消', []) + "</td></tr>";
-    document.getElementById("tfoot").innerHTML = tr;
-}
-
-function add_table_cancel() {
-    document.getElementById("tfoot").innerHTML = "";
-}
-
-function update_table_cancel(entity, id) {
-    var old = document.getElementById(entity + "_" + id);
-    var tr = "<tr><td>" + id + "</td>";
-    for (var j = 1; j < description[entity]["data"].length; j++) {
-        tr += "<td>" + old.children[j].children[0].value + "</td>";
-    }
-    tr += "<td>" + get_a_label('delete_by_id', '删除', [entity, id]) + get_a_label('update_table', '修改', [entity, id]) + "</td></tr>";
-    old.innerHTML = tr;
+    thead += "</tr>";
+    document.getElementById("thead").innerHTML = thead;
+    get_list(entity);
 }
 
 function get_list(entity) {
-    $.ajax({
-        type: "GET",
-        crossDomain: true,
-        dataType: "json",
-        url: base_url + entity + "/",
-        xhrFields: {
-            withCredentials: true
-        },
-        success: function (result) {
-            var thead = "<tr>";
-            var info = description[entity]["data"];
-            for (var i = 0; i < info.length; i++) {
-                thead += "<th>" + info[i]["description"] + "</th>"
-            }
-            thead += "<th>操作 " + get_a_label('add_table', '+', [entity]) + "</th></tr>";
+    var simulation_data = [
+        { "id": "1", "uername": "admin", "email": "password" },
+        { "id": "2", "uername": "admin2", "email": "password2" },
+        { "id": "3", "uername": "admin3", "email": "password3" }
+    ]
+    var tbody ="";
+    for (var i = 0; i < simulation_data.length; i++) {
+        tbody+="<tr>";
+        for (var j = 0; j< data[entity]["data"].length; j++) {
+        	tbody+="<td>"+simulation_data[i][data[entity]["data"][j]["column"]]+"</td>";
+        }
+        tbody+="</tr>";
+    }
+    document.getElementById("tbody").innerHTML = tbody;
 
-            var tbody = "";
-            for (var i = 0; i < result["objects"].length; i++) {
-                var id = result["objects"][i]["id"];
-                tbody += "<tr id=\"" + entity + "_" + id + "\">";
-                for (var j = 0; j < info.length; j++) {
-                    tbody += "<td>" + result["objects"][i][info[j]["column"]] + "</td>";
-                }
-                tbody += "<td>" + get_a_label('delete_by_id', '删除', [entity, id]) +
-                    get_a_label('update_table', '修改', [entity, id]) + "</td></tr>";
-            }
-            document.getElementById("thead").innerHTML = thead;
-            document.getElementById("tbody").innerHTML = tbody;
-            document.getElementById("tfoot").innerHTML = "";
-            document.getElementById("header").innerHTML = description[entity]["header"];
-            document.getElementById("description").innerHTML = description[entity]["description"];
+    // $.ajax({
+    //     type: "GET",
+    //     dataType: "json",
+    //     url: base_url + entity,
+    //     success: function(result) {
+    //         console.log(result);
+    //     },
+    //     error: function() {
+    //         console.log("error");
+    //     }
+    // });
+}
+
+function add(entity, data) {
+    $.ajax({
+        type: "PUT",
+        dataType: "json",
+        url: base_url + entity,
+        data: data,
+        success: function(result) {
+            console.log(result);
         },
-        error: function () {
+        error: function() {
             console.log("error");
         }
     });
 }
 
-function add(entity) {
-    var old = document.getElementById("tfoot").children[0];
-    var info = description[entity]["data"];
-    var data = "{";
-    for (var j = 1; j < info.length; j++) {
-        data += "\"" + info[j]["column"] + "\":\"" + old.children[j].children[0].value + "\"";
-        if (j < info.length - 1) {
-            data += ","
-        }
-    }
-    data += "}";
+function get_by_id(entity, id) {
     $.ajax({
-        type: "POST",
+        type: "GET",
         dataType: "json",
-        contentType: 'application/json',
-        url: base_url + entity + "/",
-        data: data,
-        success: function () {
-            get_list(entity);
+        url: base_url + entity + "/" + id,
+        success: function(result) {
+            console.log(result);
         },
-        error: function () {
+        error: function() {
             console.log("error");
         }
     });
@@ -224,56 +195,26 @@ function delete_by_id(entity, id) {
         type: "DELETE",
         dataType: "json",
         url: base_url + entity + "/" + id,
-        success: function () {
-            document.getElementById(entity + "_" + id).remove();
+        success: function(result) {
+            console.log(result);
         },
-        error: function () {
+        error: function() {
             console.log("error");
         }
     });
 }
 
-function update_by_id(entity, id) {
-    var data = "{";
-    var old = document.getElementById(entity + "_" + id);
-    var info = description[entity]["data"];
-    var tr = "<tr><td>" + id + "</td>";
-    for (var j = 1; j < info.length; j++) {
-        tr += "<td>" + old.children[j].children[0].value + "</td>";
-        data += "\"" + info[j]["column"] + "\":\"" + old.children[j].children[0].value + "\"";
-        if (j < info.length - 1) {
-            data += ","
-        }
-    }
-    tr += "<td>" + get_a_label('delete_by_id', '删除', [entity, id]) + get_a_label('update_table', '修改', [entity, id]) + "</td></tr>";
-    data += "}";
-
+function update_by_id(entity, id, data) {
     $.ajax({
         type: "PUT",
         dataType: "json",
-        contentType: 'application/json',
         url: base_url + entity + "/" + id,
         data: data,
-        xhrFields: {
-            withCredentials: true
+        success: function(result) {
+            console.log(result);
         },
-        success: function () {
-            document.getElementById(entity + "_" + id).innerHTML = tr;
-        },
-        error: function () {
+        error: function() {
             console.log("error");
         }
     });
-}
-
-function get_a_label(func, value, args) {
-    var a = "<a style='cursor: pointer' onclick=\"" + func + "(";
-    for (var i = 0; i < args.length; i++) {
-        a += "'" + args[i] + "'";
-        if (i < args.length - 1) {
-            a += ",";
-        }
-    }
-    a += ")\">" + value + "</a>";
-    return a;
 }
