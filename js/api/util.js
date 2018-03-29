@@ -4,7 +4,7 @@ document.cookie = "name = value; path=/";
 
 var AJAX = {};
 
-ajax.prototype.post = function (url, data, onSuccess, onError) {
+AJAX.prototype.post = function (url, data, onSuccess, onError) {
 	// $.post({
 	// 	url: url,
 	// 	data: data,
@@ -31,7 +31,7 @@ ajax.prototype.post = function (url, data, onSuccess, onError) {
 	})
 }
 
-ajax.prototype.postJSON = function (url, data, onSuccess, onError) {
+AJAX.prototype.postJSON = function (url, data, onSuccess, onError) {
 	$.post({
 		url: url,
 		data: JSON.stringify(data),
@@ -46,7 +46,7 @@ ajax.prototype.postJSON = function (url, data, onSuccess, onError) {
 	})
 }
 
-ajax.prototype.put = function (url, data, onSuccess, onError) {
+AJAX.prototype.put = function (url, data, onSuccess, onError) {
 	$.ajax({
 		url: url,
 		type: 'PUT',
@@ -80,7 +80,7 @@ ajax.prototype.put = function (url, data, onSuccess, onError) {
 	// xhr.send(data);  
 }
 
-ajax.prototype.delete = function (url, data, onSuccess, onError) {
+AJAX.prototype.delete = function (url, data, onSuccess, onError) {
 	$.ajax({
 		url: url,
 		type: 'DELETE',
@@ -95,7 +95,7 @@ ajax.prototype.delete = function (url, data, onSuccess, onError) {
 	})
 }
 
-ajax.prototype.get = function (url, onSuccess, onError) {
+AJAX.prototype.get = function (url, onSuccess, onError) {
 	$.get({
 		url: url,
 		success: function(data) {
