@@ -25,6 +25,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="assets/css/_all-skins.min.css">
     <!-- DataTables -->
     <link rel="stylesheet" href="assets/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/editor.bootstrap.min.css">
     <!-- iCheck -->
     <link rel="stylesheet" href="assets/css/icheck/blue.css">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -193,9 +194,9 @@ desired effect
             <!-- Content Header (Page header) -->
             <section class="content-header">
                 <h1>
-        <p id="header">Page Header</p>
-        <small id ="description">Optional description</small>
-      </h1>
+                    <p id="header">Page Header</p>
+                    <small id ="description">Optional description</small>
+                  </h1>
             </section>
             <!-- Main content -->
             <section class="content container-fluid">
@@ -207,9 +208,13 @@ desired effect
                             </div> -->
                             <!-- /.box-header -->
                             <div class="box-body">
+                                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-add">
+                                    添加项
+                                </button>
                                 <table id="example2" class="table table-bordered table-hover">
                                     <thead>
                                         <tr>
+                                            <th></th>
                                             <th>Name</th>
                                             <th>Id</th>
                                             <th>desc</th>
@@ -225,8 +230,8 @@ desired effect
                 </div>
                 <!-- /.row -->
                 <!--------------------------
-        | Your Page Content Here |
-        -------------------------->
+                | Your Page Content Here |
+                -------------------------->
             </section>
             <!-- /.content -->
         </div>
@@ -240,77 +245,76 @@ desired effect
             <!-- Default to the left -->
             <strong>By team <a href="https://github.com/8-god-cross-sea">Eight-God-Cross-Sea</a></strong>
         </footer>
-        <!-- Control Sidebar -->
-        <aside class="control-sidebar control-sidebar-dark">
-            <!-- Create the tabs -->
-            <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-                <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
-                <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
-            </ul>
-            <!-- Tab panes -->
-            <div class="tab-content">
-                <!-- Home tab content -->
-                <div class="tab-pane active" id="control-sidebar-home-tab">
-                    <h3 class="control-sidebar-heading">Recent Activity</h3>
-                    <ul class="control-sidebar-menu">
-                        <li>
-                            <a href="javascript:;">
-              <i class="menu-icon fa fa-birthday-cake bg-red"></i>
-
-              <div class="menu-info">
-                <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
-
-                <p>Will be 23 on April 24th</p>
-              </div>
-            </a>
-                        </li>
-                    </ul>
-                    <!-- /.control-sidebar-menu -->
-                    <h3 class="control-sidebar-heading">Tasks Progress</h3>
-                    <ul class="control-sidebar-menu">
-                        <li>
-                            <a href="javascript:;">
-                                <h4 class="control-sidebar-subheading">
-                Custom Template Design
-                <span class="pull-right-container">
-                    <span class="label label-danger pull-right">70%</span>
-                  </span>
-              </h4>
-                                <div class="progress progress-xxs">
-                                    <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
-                                </div>
-                            </a>
-                        </li>
-                    </ul>
-                    <!-- /.control-sidebar-menu -->
-                </div>
-                <!-- /.tab-pane -->
-                <!-- Stats tab content -->
-                <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
-                <!-- /.tab-pane -->
-                <!-- Settings tab content -->
-                <div class="tab-pane" id="control-sidebar-settings-tab">
-                    <form method="post">
-                        <h3 class="control-sidebar-heading">General Settings</h3>
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                Report panel usage
-                                <input type="checkbox" class="pull-right" checked>
-                            </label>
-                            <p>
-                                Some information about this general settings option
-                            </p>
-                        </div>
-                        <!-- /.form-group -->
-                    </form>
-                </div>
-                <!-- /.tab-pane -->
-            </div>
-        </aside>
         <!-- /.control-sidebar -->
         <!-- Add the sidebar's background. This div must be placed
   immediately after the control sidebar -->
-        <div class="control-sidebar-bg"></div>
+    </div>
+    <div class="modal fade in" id="modal-add">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Default Modal</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="add-name">Email address</label>
+                            <input type="text" class="form-control" id="add-name" placeholder="Enter name">
+                        </div>
+                        <div class="form-group">
+                            <label for="add-id">Password</label>
+                            <input type="text" class="form-control" id="add-id" placeholder="Enter id">
+                        </div>
+                        <div class="form-group">
+                            <label for="add-desc">Password</label>
+                            <input type="text" class="form-control" id="add-desc" placeholder="Enter id">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">关闭</button>
+                    <button type="button" id="add-save" class="btn btn-primary">保存</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal fade in" id="modal-edit">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Default Modal</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="edit-name">Email address</label>
+                            <input type="text" class="form-control" id="edit-name" placeholder="Enter email">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-id">Password</label>
+                            <input type="text" class="form-control" id="edit-id" placeholder="Enter id">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-desc">Password</label>
+                            <input type="text" class="form-control" id="edit-desc" placeholder="Enter id">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">关闭</button>
+                    <button type="button" id="add-save" class="btn btn-primary">保存</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
     </div>
     <!-- ./wrapper -->
     <!-- REQUIRED JS SCRIPTS -->
@@ -318,15 +322,19 @@ desired effect
     <script src="assets/js/jquery.min.js"></script>
     <!-- Bootstrap 3.3.7 -->
     <script src="assets/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="assets/js/fastclick.js"></script>
     <!-- AdminLTE App -->
     <script src="assets/js/adminlte.min.js"></script>
     <!-- DataTables -->
     <script src="assets/js/jquery.dataTables.min.js"></script>
     <script src="assets/js/dataTables.bootstrap.min.js"></script>
+    <script src="assets/js/dataTables.editor.min.js"></script>
+    <script src="assets/js/editor.bootstrap.min.js"></script>
     <!-- SlimScroll -->
     <script src="assets/js/jquery.slimscroll.min.js"></script>
-    <!-- FastClick -->
-    <script src="assets/js/fastclick.js"></script>
+    <script src="js/api/util.js"></script>
+    <script src="js/api/demo.js"></script>
     <script src="js/operation.js"></script>
     <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the
@@ -334,10 +342,51 @@ desired effect
     <!-- page script -->
     <script>
     $(function() {
-        $('#example2').DataTable({
+
+        var editor = new $.fn.dataTable.Editor( {
+            ajax: "",
+            table: "#example2",
+            fields: [ {
+                    label: "First name:",
+                    name: "first_name"
+                }, {
+                    label: "Last name:",
+                    name: "last_name"
+                }, {
+                    label: "Position:",
+                    name: "position"
+                }, {
+                    label: "Office:",
+                    name: "office"
+                }, {
+                    label: "Extension:",
+                    name: "extn"
+                }, {
+                    label: "Start date:",
+                    name: "start_date",
+                    type: "datetime"
+                }, {
+                    label: "Salary:",
+                    name: "salary"
+                }
+            ],
+            formOptions: {
+                bubble: {
+                    title: 'Edit',
+                    buttons: false
+                }
+            }
+        } );
+        var table = $('#example2').DataTable({
             "ajax": "data/demo.txt",
             // "ajax": url,
             "columns": [
+                {
+                    'data': null,
+                    'defaultContent': '',
+                    'className': 'select-checkbox',
+                    'orderable': false
+                },
                 { "data": "name" },
                 { "data": "id" },
                 { "data": "desc" }
@@ -349,10 +398,20 @@ desired effect
             'searching': false,
             'ordering': true,
             'info': true,
-            'autoWidth': false
+            'autoWidth': false,
+            buttons: [
+                { extend: "create", editor: editor },
+                { extend: "edit",   editor: editor },
+                { extend: "remove", editor: editor }
+            ]
         })
+
+        // setInterval(function() {
+        //     table.ajax.reload();
+        // }, 10000);
     })
     </script>
+    <script src="js/data.js"></script>
 </body>
 
 </html>
