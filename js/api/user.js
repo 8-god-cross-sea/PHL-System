@@ -60,7 +60,7 @@ USER.prototype.register = function (username, password, callback, errCallback) {
     ajaxPost(url, data, onSuccess, onError);
 }
 
-USER.prototype.getUserInfo = function (userId, callback, errCallback) {
+USER.prototype.getInfo = function (userId, callback, errCallback) {
     var url = "http://frozen-retreat-73403.herokuapp.com/api/user/{{userId}}"
         .replace("{{userId}}", userId);
 
@@ -75,7 +75,7 @@ USER.prototype.getUserInfo = function (userId, callback, errCallback) {
     AJAX.get(url, onSuccess, onError);
 }
 
-USER.prototype.updateUserInfo = function (email, callback, errCallback) {
+USER.prototype.updateInfo = function (email, callback, errCallback) {
     var url = "http://frozen-retreat-73403.herokuapp.com/api/user/{{userId}}"
         .replace("{{userId}}", userId);
     var data = "email={{email}}}"
@@ -93,7 +93,7 @@ USER.prototype.updateUserInfo = function (email, callback, errCallback) {
     ajaxPut(url, data, onSuccess, onError);
 }
 
-USER.prototype.deleteUserInfo = function (userId, callback, errCallback) {
+USER.prototype.deleteInfo = function (userId, callback, errCallback) {
     var url = "http://frozen-retreat-73403.herokuapp.com/api/user/{{userId}}"
         .replace("{{userId}}", userId);
 
