@@ -17,13 +17,11 @@ $('#loginBTN').click(function() {
 })
 
 $('#logoutBTN').click(function() {
-    USER.logout(success, error);
+    USER.logout()
+    .then(function(data) {
 
-    function success(data) {
-        alert("登出成功!");
-    }
+    })
+    .catch(function(data) {
 
-    function error(data) {
-        alert("登出失败!");
-    }
+    });
 })
