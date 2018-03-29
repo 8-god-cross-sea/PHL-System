@@ -2,12 +2,26 @@
 
 document.cookie = "name = value; path=/";
 
-function ajaxPost(url, data, onSuccess, onError) {
+var AJAX = {};
+
+ajax.prototype.post = function (url, data, onSuccess, onError) {
+	// $.post({
+	// 	url: url,
+	// 	data: data,
+	// 	xhrFields: {withCredentials: true},
+	// 	contentType: "Content-Type:application/x-www-form-urlencoded",
+	// 	success: function(data) {
+	// 		onSuccess(data);
+	// 	},
+	// 	error: function(data) {
+	// 		onError(data);
+	// 	}
+	// })
 	$.post({
 		url: url,
-		data: data,
-		xhrFields: {withCredentials: true},
-		contentType: "Content-Type:application/x-www-form-urlencoded",
+		data: JSON.stringify(data),
+		// xhrFields: {withCredentials: true},
+		contentType: "application/json;charset=utf-8",
 		success: function(data) {
 			onSuccess(data);
 		},
@@ -17,38 +31,7 @@ function ajaxPost(url, data, onSuccess, onError) {
 	})
 }
 
-function ajaxPut(url, data, onSuccess, onError) {
-	$.ajax({
-		url: url,
-		type: 'PUT',
-		data: data,
-		xhrFields: {withCredentials: true},
-		contentType: "Content-Type:application/x-www-form-urlencoded",
-		success: function(data) {
-			onSuccess(data);
-		},
-		error: function(data) {
-			onError(data);
-		}
-	})
-}
-
-function ajaxDelete(url, data, onSuccess, onError) {
-	$.ajax({
-		url: url,
-		type: 'DELETE',
-		xhrFields: {withCredentials: true},
-		contentType: "Content-Type:application/x-www-form-urlencoded",
-		success: function(data) {
-			onSuccess(data);
-		},
-		error: function(data) {
-			onError(data);
-		}
-	})
-}
-
-function ajaxPostJSON(url, data, onSuccess, onError) {
+ajax.prototype.postJSON = function (url, data, onSuccess, onError) {
 	$.post({
 		url: url,
 		data: JSON.stringify(data),
@@ -63,7 +46,56 @@ function ajaxPostJSON(url, data, onSuccess, onError) {
 	})
 }
 
-function ajaxGet(url, onSuccess, onError) {
+ajax.prototype.put = function (url, data, onSuccess, onError) {
+	$.ajax({
+		url: url,
+		type: 'PUT',
+		data: data,
+		xhrFields: {withCredentials: true},
+		contentType: "Content-Type:application/x-www-form-urlencoded",
+		success: function(data) {
+			onSuccess(data);
+		},
+		error: function(data) {
+			onError(data);
+		}
+	})
+
+	// var xhr = new XMLHttpRequest();  
+	// if (xhr.withCredentials === undefined) {  
+ //        return;  
+ //    }
+ //    xhr.open("POST", url);  
+ //    xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");  
+
+ //    xhr.onreadystatechange = function () {  
+ //    if (xhr.readyState !== 4) return;
+ //    	if (xhr.status === 200) {
+ //    		onSuccess(data);
+	//     } else {
+	//     	onError(data);
+	//     }
+	// }  
+
+	// xhr.send(data);  
+}
+
+ajax.prototype.delete = function (url, data, onSuccess, onError) {
+	$.ajax({
+		url: url,
+		type: 'DELETE',
+		xhrFields: {withCredentials: true},
+		contentType: "Content-Type:application/x-www-form-urlencoded",
+		success: function(data) {
+			onSuccess(data);
+		},
+		error: function(data) {
+			onError(data);
+		}
+	})
+}
+
+ajax.prototype.get = function (url, onSuccess, onError) {
 	$.get({
 		url: url,
 		success: function(data) {

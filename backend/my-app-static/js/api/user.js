@@ -1,10 +1,13 @@
 'use strict';
 
-function login(username, password, callback, errCallback) {
+var USER ={};
+
+USER.prototype.login = function (username, password, callback, errCallback) {
     var url = "http://frozen-retreat-73403.herokuapp.com/api/user/login";
-    var data = "username={{username}}&password={{password}}"
-        .replace("{{username}}", username)
-        .replace("{{password}}", password);
+    var data = {
+        username: username,
+        password: password
+    };
 
     function onSuccess(data) {
         callback(data);
@@ -18,10 +21,10 @@ function login(username, password, callback, errCallback) {
         }
     }
 
-    ajaxPost(url, data, onSuccess, onError);
+    AJAX.post(url, data, onSuccess, onError);
 }
 
-function logout(callback) {
+USER.prototype.logout = function (callback) {
     var url = "http://frozen-retreat-73403.herokuapp.com/api/user/logout";
     var data = null;
 
@@ -37,15 +40,14 @@ function logout(callback) {
         }
     }
 
-    ajaxPost(url, data, onSuccess, onError);
+    AJAX.post(url, data, onSuccess, onError);
 }
 
-function register(username, password, callback, errCallback) {
+USER.prototype.register = function (username, password, callback, errCallback) {
     var url = "http://frozen-retreat-73403.herokuapp.com/api/user";
     var data = "username={{username}}&password={{password}}"
         .replace("{{username}}", username)
         .replace("{{password}}", password);
-
 
     function onSuccess(data) {
         callback(data);
@@ -58,7 +60,7 @@ function register(username, password, callback, errCallback) {
     ajaxPost(url, data, onSuccess, onError);
 }
 
-function getUserInfo(userId, callback, errCallback) {
+USER.prototype.getUserInfo = function (userId, callback, errCallback) {
     var url = "http://frozen-retreat-73403.herokuapp.com/api/user/{{userId}}"
         .replace("{{userId}}", userId);
 
@@ -70,10 +72,10 @@ function getUserInfo(userId, callback, errCallback) {
         errCallback(data);
     }
 
-    ajaxGet(url, onSuccess, onError);
+    AJAX.get(url, onSuccess, onError);
 }
 
-function updateUserInfo(email, callback, errCallback) {
+USER.prototype.updateUserInfo = function (email, callback, errCallback) {
     var url = "http://frozen-retreat-73403.herokuapp.com/api/user/{{userId}}"
         .replace("{{userId}}", userId);
     var data = "email={{email}}}"
@@ -91,7 +93,7 @@ function updateUserInfo(email, callback, errCallback) {
     ajaxPut(url, data, onSuccess, onError);
 }
 
-function deleteUserInfo(userId, callback, errCallback) {
+USER.prototype.deleteUserInfo = function (userId, callback, errCallback) {
     var url = "http://frozen-retreat-73403.herokuapp.com/api/user/{{userId}}"
         .replace("{{userId}}", userId);
 
@@ -104,5 +106,5 @@ function deleteUserInfo(userId, callback, errCallback) {
         errCallback(data);
     }
 
-    ajaxDelete(url, data, onSuccess, onError);
+    AJAX.delete(url, data, onSuccess, onError);
 }
