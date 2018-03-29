@@ -2,7 +2,7 @@
 
 var USER ={};
 
-USER.prototype.login = function (username, password, callback, errCallback) {
+USER.login = function (username, password, callback, errCallback) {
     var url = "http://frozen-retreat-73403.herokuapp.com/api/user/login";
     var data = {
         username: username,
@@ -24,7 +24,7 @@ USER.prototype.login = function (username, password, callback, errCallback) {
     AJAX.post(url, data, onSuccess, onError);
 }
 
-USER.prototype.logout = function (callback) {
+USER.logout = function (callback) {
     var url = "http://frozen-retreat-73403.herokuapp.com/api/user/logout";
     var data = null;
 
@@ -43,7 +43,7 @@ USER.prototype.logout = function (callback) {
     AJAX.post(url, data, onSuccess, onError);
 }
 
-USER.prototype.register = function (username, password, callback, errCallback) {
+USER.register = function (username, password, callback, errCallback) {
     var url = "http://frozen-retreat-73403.herokuapp.com/api/user";
     var data = "username={{username}}&password={{password}}"
         .replace("{{username}}", username)
@@ -60,7 +60,7 @@ USER.prototype.register = function (username, password, callback, errCallback) {
     ajaxPost(url, data, onSuccess, onError);
 }
 
-USER.prototype.getInfo = function (userId, callback, errCallback) {
+USER.getInfo = function (userId, callback, errCallback) {
     var url = "http://frozen-retreat-73403.herokuapp.com/api/user/{{userId}}"
         .replace("{{userId}}", userId);
 
@@ -75,7 +75,7 @@ USER.prototype.getInfo = function (userId, callback, errCallback) {
     AJAX.get(url, onSuccess, onError);
 }
 
-USER.prototype.updateInfo = function (email, callback, errCallback) {
+USER.updateInfo = function (email, callback, errCallback) {
     var url = "http://frozen-retreat-73403.herokuapp.com/api/user/{{userId}}"
         .replace("{{userId}}", userId);
     var data = "email={{email}}}"
@@ -93,7 +93,7 @@ USER.prototype.updateInfo = function (email, callback, errCallback) {
     ajaxPut(url, data, onSuccess, onError);
 }
 
-USER.prototype.deleteInfo = function (userId, callback, errCallback) {
+USER.deleteInfo = function (userId, callback, errCallback) {
     var url = "http://frozen-retreat-73403.herokuapp.com/api/user/{{userId}}"
         .replace("{{userId}}", userId);
 
