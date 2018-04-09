@@ -1,4 +1,5 @@
 var base_url = "https://phls.herokuapp.com/api/";
+var add_list = {};
 var description = {
     "user": {
         "header": "用户管理",
@@ -128,6 +129,10 @@ var description = {
         }, {
             "column": "name",
             "description": "病例名称"
+        }],
+        "detail": [{
+            "column": "name",
+            "description": "病例名称"
         }, {
             "column": "reception",
             "description": "接诊",
@@ -155,7 +160,7 @@ function update_item(entity, id) {
         tr += "<td><input value=\"" + old.children[j].innerHTML + "\">" + "</td>";
     }
     tr += "<td>" + get_a_label('update_by_id', '修改', [entity, id]) + get_a_label('update_item_cancel', '取消', [entity, id]) + "</td></tr>";
-    document.getElementById(entity + "_" + id).innerHTML = tr;
+    $("#" + entity + "_" + id).html(tr);
 }
 
 function add_item(entity) {
@@ -164,22 +169,26 @@ function add_item(entity) {
         tr += "<td><input required></td>";
     }
     tr += "<td>" + get_a_label('add', '保存', [entity]) + get_a_label('add_item_cancel', '取消', ["tfoot"]) + "</td></tr>";
-    document.getElementById("tfoot").innerHTML = tr;
+    $("#tfoot").html(tr);
 }
 
 function add_rich_text_item(entity) {
     var tr = "";
-    var info = description[entity]["data"];
-    for (var j = 1; j < description[entity]["data"].length; j++) {
-        tr += info[j]["description"]+"<div id='new_" + info[j]["column"] + "'></div>";
+    var info = description[entity]["detail"];
+    for (var j = 0; j < info.length; j++) {
+        tr += info[j]["description"] + "<div id='new_" + info[j]["column"] + "'></div>";
     }
     tr += get_a_label('add_rich_text', '保存', [entity]) + get_a_label('add_item_cancel', '取消', ["add_space"]);
-    document.getElementById("add_space").innerHTML = tr;
-    for (var j = 1; j < info.length; j++) {
+    $("#add_space").html(tr);
+
+    for (var j = 0; j < info.length; j++) {
         if (info[j]["rich_text"] == "true") {
             var E = window.wangEditor
             var editor = new E("#new_" + info[j]["column"]);
-            editor.create()
+            editor.customConfig.uploadImgShowBase64 = true;
+            editor.customConfig.showLinkImg = false;
+            editor.create();
+            add_list[info[j]["column"]] = editor;
         }
         else {
             document.getElementById("new_" + info[j]["column"]).innerHTML += "<input required>";
@@ -188,7 +197,7 @@ function add_rich_text_item(entity) {
 }
 
 function add_item_cancel(div) {
-    document.getElementById(div).innerHTML = "";
+    $("#" + div).html("");
 }
 
 function update_item_cancel(entity, id) {
@@ -201,15 +210,16 @@ function update_item_cancel(entity, id) {
     old.innerHTML = tr;
 }
 
-function get_list(entity, add, remove, update) {
+function get_list(entity, add, remove, update, detail) {
+    add = add || "add_item";
+    remove = remove || "delete_by_id";
+    update = update || "update_item";
     $.ajax({
         type: "GET",
         crossDomain: true,
         dataType: "json",
         url: base_url + entity + "/",
-        xhrFields: {
-            withCredentials: true
-        },
+        xhrFields: {withCredentials: true},
         success: function (result) {
             var thead = "<tr>";
             var info = description[entity]["data"];
@@ -221,19 +231,20 @@ function get_list(entity, add, remove, update) {
             var tbody = "";
             for (var i = 0; i < result["objects"].length; i++) {
                 var id = result["objects"][i]["id"];
-                tbody += "<tr id=\"" + entity + "_" + id + "\">";
+                tbody += "<tr id='" + entity + "_" + id + "'>";
                 for (var j = 0; j < info.length; j++) {
                     tbody += "<td>" + result["objects"][i][info[j]["column"]] + "</td>";
                 }
-                tbody += "<td>" + get_a_label(remove, '删除', [entity, id])
-                    + get_a_label(update, '修改', [entity, id]) + "</td></tr>";
+                tbody += "<td>" + get_a_label(remove, ' 删除 ', [entity, id])
+                    + get_a_label(update, ' 修改 ', [entity, id])
+                    + get_a_label(detail, ' 详情 ', [entity, id]) + "</td></tr>";
             }
-            document.getElementById("thead").innerHTML = thead;
-            document.getElementById("tbody").innerHTML = tbody;
-            document.getElementById("tfoot").innerHTML = "";
-            document.getElementById("add_space").innerHTML = "";
-            document.getElementById("header").innerHTML = description[entity]["header"];
-            document.getElementById("description").innerHTML = description[entity]["description"];
+            $("#thead").html(thead);
+            $("#tbody").html(tbody);
+            $("#tfoot").html("");
+            $("#add_space").html("");
+            $("#header").html(description[entity]["header"]);
+            $("#description").html(description[entity]["description"]);
         },
         error: function () {
             console.log("error");
@@ -244,20 +255,19 @@ function get_list(entity, add, remove, update) {
 function add(entity) {
     var old = document.getElementById("tfoot").children[0];
     var info = description[entity]["data"];
-    var data = "{";
+    var data = {};
     for (var j = 1; j < info.length; j++) {
-        data += "\"" + info[j]["column"] + "\":\"" + old.children[j].children[0].value + "\"";
-        if (j < info.length - 1) {
-            data += ","
-        }
+        data[info[j]['column']] = old.children[j].children[0].value;
     }
-    data += "}";
     $.ajax({
         type: "POST",
         dataType: "json",
         contentType: 'application/json',
         url: base_url + entity + "/",
-        data: data,
+        xhrFields: {
+            withCredentials: true
+        },
+        data: JSON.stringify(data),
         success: function () {
             get_list(entity);
         },
@@ -268,33 +278,38 @@ function add(entity) {
 }
 
 function add_rich_text(entity) {
-    var old = document.getElementById("add_space");
-    var info = description[entity]["data"];
-    var data = "{";
-    for (var j = 1; j < info.length; j++) {
-        var value = "";
-        if (info[j]["rich_text"] == "true") {
-            value = $("#new_" + info[j]["column"]).html();
-        } else {
-            value = old.children[j-1].children[0].value;
-        }
-        data += "\"" + info[j]["column"] + "\":\"" + value + "\"";
-        if (j < info.length - 1) {
-            data += ","
-        }
+    var info = description[entity]["detail"];
+    var data = {};
+    for (var j = 0; j < info.length; j++) {
+        data[info[j]['column']] = info[j]["rich_text"] == "true" ? add_list[info[j]["column"]].txt.html() : document.getElementById("add_space").children[j].children[0].value;
     }
-    data += "}";
     $.ajax({
         type: "POST",
         dataType: "json",
         contentType: 'application/json',
         url: base_url + entity + "/",
-        data: data,
+        xhrFields: {withCredentials: true},
+        data: JSON.stringify(data),
         success: function () {
-            get_list(entity);
+            get_list(entity, 'add_rich_text_item', 'delete_by_id', 'update_item', 'get_by_id');
         },
-        error: function () {
-            console.log("error");
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
+function get_by_id(entity, id) {
+    $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: base_url + entity + "/" + id,
+        xhrFields: {withCredentials: true},
+        success: function (result) {
+            console.log(result);
+        },
+        error: function (error) {
+            console.log(error);
         }
     });
 }
@@ -304,49 +319,45 @@ function delete_by_id(entity, id) {
         type: "DELETE",
         dataType: "json",
         url: base_url + entity + "/" + id,
+        xhrFields: {withCredentials: true},
         success: function () {
             document.getElementById(entity + "_" + id).remove();
         },
-        error: function () {
-            console.log("error");
+        error: function (error) {
+            console.log(error);
         }
     });
 }
 
 function update_by_id(entity, id) {
-    var data = "{";
-    var old = document.getElementById(entity + "_" + id);
     var info = description[entity]["data"];
+    var data = {};
     var tr = "<tr><td>" + id + "</td>";
     for (var j = 1; j < info.length; j++) {
-        tr += "<td>" + old.children[j].children[0].value + "</td>";
-        data += "\"" + info[j]["column"] + "\":\"" + old.children[j].children[0].value + "\"";
-        if (j < info.length - 1) {
-            data += ","
-        }
+        var old_value = document.getElementById(entity + "_" + id).children[j].children[0].value;
+        tr += "<td>" + old_value + "</td>";
+        data[info[j]["column"]] = old_value;
     }
     tr += "<td>" + get_a_label('delete_by_id', '删除', [entity, id]) + get_a_label('update_item', '修改', [entity, id]) + "</td></tr>";
-    data += "}";
 
     $.ajax({
         type: "PUT",
         dataType: "json",
         contentType: 'application/json',
         url: base_url + entity + "/" + id,
-        data: data,
-        xhrFields: {
-            withCredentials: true
-        },
+        data: JSON.stringify(data),
+        xhrFields: {withCredentials: true},
         success: function () {
-            document.getElementById(entity + "_" + id).innerHTML = tr;
+            $("#" + entity + "_" + id).html(tr);
         },
-        error: function () {
-            console.log("error");
+        error: function (error) {
+            console.log(error);
         }
     });
 }
 
 function get_a_label(func, value, args) {
+    if (!func) return "";
     var a = "<a style='cursor: pointer' onclick=\"" + func + "(";
     for (var i = 0; i < args.length; i++) {
         a += "'" + args[i] + "'";
