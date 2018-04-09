@@ -1,6 +1,0 @@
-<ul>
-	<li *ngFor="let medCase of cases" [class.selected]="medCase===caseDetail" (click)="onSelect(medCase)">
-		<h3>{{medCase.name}}</h3>
-	</li>
-</ul>
-<app-case-detail [case]="caseDetail"></app-case-detail>
