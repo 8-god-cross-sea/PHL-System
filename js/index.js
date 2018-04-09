@@ -130,54 +130,78 @@ var description = {
             "description": "病例名称"
         }, {
             "column": "reception",
-            "description": "接诊"
+            "description": "接诊",
+            "rich_text": "true",
         }, {
             "column": "inspection",
-            "description": "病理检查"
+            "description": "病理检查",
+            "rich_text": "true",
         }, {
             "column": "result",
-            "description": "诊断结果"
+            "description": "诊断结果",
+            "rich_text": "true",
         }, {
             "column": "treatment",
-            "description": "治疗方案"
+            "description": "治疗方案",
+            "rich_text": "true",
         }]
     },
 }
 
-function update_table(entity, id) {
+function update_item(entity, id) {
     var old = document.getElementById(entity + "_" + id);
     var tr = "<tr><td>" + old.children[0].innerHTML + "</td>";
     for (var j = 1; j < description[entity]["data"].length; j++) {
         tr += "<td><input value=\"" + old.children[j].innerHTML + "\">" + "</td>";
     }
-    tr += "<td>" + get_a_label('update_by_id', '修改', [entity, id]) + get_a_label('update_table_cancel', '取消', [entity, id]) + "</td></tr>";
+    tr += "<td>" + get_a_label('update_by_id', '修改', [entity, id]) + get_a_label('update_item_cancel', '取消', [entity, id]) + "</td></tr>";
     document.getElementById(entity + "_" + id).innerHTML = tr;
 }
 
-function add_table(entity) {
+function add_item(entity) {
     var tr = "<tr><td></td>";
     for (var j = 1; j < description[entity]["data"].length; j++) {
         tr += "<td><input required></td>";
     }
-    tr += "<td>" + get_a_label('add', '保存', [entity]) + get_a_label('add_table_cancel', '取消', []) + "</td></tr>";
+    tr += "<td>" + get_a_label('add', '保存', [entity]) + get_a_label('add_item_cancel', '取消', ["tfoot"]) + "</td></tr>";
     document.getElementById("tfoot").innerHTML = tr;
 }
 
-function add_table_cancel() {
-    document.getElementById("tfoot").innerHTML = "";
+function add_rich_text_item(entity) {
+    var tr = "";
+    var info = description[entity]["data"];
+    for (var j = 1; j < description[entity]["data"].length; j++) {
+        tr += info[j]["description"]+"<div id='new_" + info[j]["column"] + "'></div>";
+    }
+    tr += get_a_label('add_rich_text', '保存', [entity]) + get_a_label('add_item_cancel', '取消', ["add_space"]);
+    document.getElementById("add_space").innerHTML = tr;
+    for (var j = 1; j < info.length; j++) {
+        if (info[j]["rich_text"] == "true") {
+            var E = window.wangEditor
+            var editor = new E("#new_" + info[j]["column"]);
+            editor.create()
+        }
+        else {
+            document.getElementById("new_" + info[j]["column"]).innerHTML += "<input required>";
+        }
+    }
 }
 
-function update_table_cancel(entity, id) {
+function add_item_cancel(div) {
+    document.getElementById(div).innerHTML = "";
+}
+
+function update_item_cancel(entity, id) {
     var old = document.getElementById(entity + "_" + id);
     var tr = "<tr><td>" + id + "</td>";
     for (var j = 1; j < description[entity]["data"].length; j++) {
         tr += "<td>" + old.children[j].children[0].value + "</td>";
     }
-    tr += "<td>" + get_a_label('delete_by_id', '删除', [entity, id]) + get_a_label('update_table', '修改', [entity, id]) + "</td></tr>";
+    tr += "<td>" + get_a_label('delete_by_id', '删除', [entity, id]) + get_a_label('update_item', '修改', [entity, id]) + "</td></tr>";
     old.innerHTML = tr;
 }
 
-function get_list(entity) {
+function get_list(entity, add, remove, update) {
     $.ajax({
         type: "GET",
         crossDomain: true,
@@ -192,7 +216,7 @@ function get_list(entity) {
             for (var i = 0; i < info.length; i++) {
                 thead += "<th>" + info[i]["description"] + "</th>"
             }
-            thead += "<th>操作 " + get_a_label('add_table', '+', [entity]) + "</th></tr>";
+            thead += "<th>操作 " + get_a_label(add, '+', [entity]) + "</th></tr>";
 
             var tbody = "";
             for (var i = 0; i < result["objects"].length; i++) {
@@ -201,81 +225,15 @@ function get_list(entity) {
                 for (var j = 0; j < info.length; j++) {
                     tbody += "<td>" + result["objects"][i][info[j]["column"]] + "</td>";
                 }
-                tbody += "<td>" + get_a_label('delete_by_id', '删除', [entity, id]) +
-                    get_a_label('update_table', '修改', [entity, id]) + "</td></tr>";
+                tbody += "<td>" + get_a_label(remove, '删除', [entity, id])
+                    + get_a_label(update, '修改', [entity, id]) + "</td></tr>";
             }
             document.getElementById("thead").innerHTML = thead;
             document.getElementById("tbody").innerHTML = tbody;
             document.getElementById("tfoot").innerHTML = "";
+            document.getElementById("add_space").innerHTML = "";
             document.getElementById("header").innerHTML = description[entity]["header"];
             document.getElementById("description").innerHTML = description[entity]["description"];
-        },
-        error: function () {
-            console.log("error");
-        }
-    });
-}
-
-function get_list(entity, useFunctionLabel) {
-    $.ajax({
-        type: "GET",
-        crossDomain: true,
-        dataType: "json",
-        url: base_url + entity + "/",
-        xhrFields: {
-            withCredentials: true
-        },
-        success: function (result) {
-            var thead = "<tr>";
-            var info = description[entity]["data"];
-            for (var i = 0; i < info.length; i++) {
-                thead += "<th>" + info[i]["description"] + "</th>"
-            }
-            if (useFunctionLabel)
-            {
-                thead += "<th>操作 " + get_a_label('add_table', '+', [entity]) + "</th></tr>";
-            }
-
-            var tbody = "";
-            for (var i = 0; i < result["objects"].length; i++) {
-                var id = result["objects"][i]["id"];
-                tbody += "<tr id=\"" + entity + "_" + id + "\">";
-                for (var j = 0; j < info.length; j++) {
-                    tbody += "<td><a href='#' onClick='get_rich_text_list('case,"+ j + "')'>" + result["objects"][i][info[j]["column"]] + "</a></td>";
-                }
-                if (useFunctionLabel)
-                {
-                    tbody += "<td>" + get_a_label('delete_by_id', '删除', [entity, id]) +
-                        get_a_label('update_table', '修改', [entity, id]) + "</td></tr>";
-                }
-            }
-            document.getElementById("thead").innerHTML = thead;
-            document.getElementById("tbody").innerHTML = tbody;
-            document.getElementById("tfoot").innerHTML = "";
-            document.getElementById("header").innerHTML = description[entity]["header"];
-            document.getElementById("description").innerHTML = description[entity]["description"];
-        },
-        error: function () {
-            console.log("error");
-        }
-    });
-}
-
-
-function get_rich_text_list(entity, id) {
-    $.ajax({
-        type: "GET",
-        crossDomain: true,
-        dataType: "json",
-        url: base_url + entity + "/"+ id,
-        xhrFields: {
-            withCredentials: true
-        },
-        success: function (result) {
-            document.getElementById("reception").innerHTML = result["objects"][0]["reception"];
-            document.getElementById("inspection").innerHTML = result["objects"][0]["inspection"];
-            document.getElementById("result").innerHTML = result["objects"][0]["result"];
-            document.getElementById("treatment").innerHTML = result["objects"][0]["treatment"];
         },
         error: function () {
             console.log("error");
@@ -289,6 +247,38 @@ function add(entity) {
     var data = "{";
     for (var j = 1; j < info.length; j++) {
         data += "\"" + info[j]["column"] + "\":\"" + old.children[j].children[0].value + "\"";
+        if (j < info.length - 1) {
+            data += ","
+        }
+    }
+    data += "}";
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        contentType: 'application/json',
+        url: base_url + entity + "/",
+        data: data,
+        success: function () {
+            get_list(entity);
+        },
+        error: function () {
+            console.log("error");
+        }
+    });
+}
+
+function add_rich_text(entity) {
+    var old = document.getElementById("add_space");
+    var info = description[entity]["data"];
+    var data = "{";
+    for (var j = 1; j < info.length; j++) {
+        var value = "";
+        if (info[j]["rich_text"] == "true") {
+            value = $("#new_" + info[j]["column"]).html();
+        } else {
+            value = old.children[j-1].children[0].value;
+        }
+        data += "\"" + info[j]["column"] + "\":\"" + value + "\"";
         if (j < info.length - 1) {
             data += ","
         }
@@ -335,7 +325,7 @@ function update_by_id(entity, id) {
             data += ","
         }
     }
-    tr += "<td>" + get_a_label('delete_by_id', '删除', [entity, id]) + get_a_label('update_table', '修改', [entity, id]) + "</td></tr>";
+    tr += "<td>" + get_a_label('delete_by_id', '删除', [entity, id]) + get_a_label('update_item', '修改', [entity, id]) + "</td></tr>";
     data += "}";
 
     $.ajax({
