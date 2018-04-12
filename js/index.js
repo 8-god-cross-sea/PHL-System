@@ -3,133 +3,149 @@ var add_list = {};
 var description = {
     "user": {
         "header": "用户管理",
-        "description": "用于管理用户相关内容",
-        "data": [{
-            "column": "id",
-            "description": "用户ID"
-        }, {
-            "column": "uername",
-            "description": "用户名称"
-        }, {
-            "column": "email", //TMP
-            "description": "Email"
-        }, {
-            "column": "join_date", //TMP
-            "description": "加入日期"
-        }]
+        "description": "用户相关内容：包括用户名称、Email、加入日期",
+        "data": [
+            // {
+            //     "column": "id",
+            //     "description": "用户ID"
+            // },
+            {
+                "column": "uername",
+                "description": "用户名称"
+            }, {
+                "column": "email", //TMP
+                "description": "Email"
+            }, {
+                "column": "join_date", //TMP
+                "description": "加入日期"
+            }]
     },
     "department": {
         "header": "科室管理",
-        "description": "用于管理科室相关内容",
-        "data": [{
-            "column": "id",
-            "description": "科室ID"
-        }, {
-            "column": "name",
-            "description": "科室名称"
-        }, {
-            "column": "description", //TMP
-            "description": "描述"
-        }]
+        "description": "科室相关内容：科室名称、描述",
+        "data": [
+            // {
+            //     "column": "id",
+            //     "description": "科室ID"
+            // },
+            {
+                "column": "name",
+                "description": "科室名称"
+            }, {
+                "column": "description", //TMP
+                "description": "描述"
+            }]
     },
     "medicine": {
         "header": "药品管理",
-        "description": "用于管理药品相关内容",
-        "data": [{
-            "column": "id",
-            "description": "药品ID"
-        }, {
-            "column": "name",
-            "description": "中文名称"
-        }, {
-            "column": "price", //TMP
-            "description": "价格"
-        }, {
-            "column": "count",
-            "description": "库存"
-        }]
+        "description": "药品相关内容：中文名称、价格、库存",
+        "data": [
+            // {
+            //     "column": "id",
+            //     "description": "药品ID"
+            // },
+            {
+                "column": "name",
+                "description": "中文名称"
+            }, {
+                "column": "price", //TMP
+                "description": "价格"
+            }, {
+                "column": "count",
+                "description": "库存"
+            }]
     },
     "assay": {
         "header": "化验管理",
-        "description": "用于管理化验相关内容",
-        "data": [{
-            "column": "id",
-            "description": "化验ID"
-        }, {
-            "column": "patient",
-            "description": "宠物ID"
-        }, {
-            "column": "wbc",
-            "description": "基本指标"
-        }, {
-            "column": "rbc",
-            "description": "基本指标"
-        }, {
-            "column": "plt",
-            "description": "基本指标"
-        }]
+        "description": "化验相关内容：宠物ID、基本指标wbc、基本指标rbc、基本指标plt",
+        "data": [
+            // {
+            //     "column": "id",
+            //     "description": "化验ID"
+            // },
+            {
+                "column": "patient",
+                "description": "宠物ID"
+            }, {
+                "column": "wbc",
+                "description": "基本指标wbc"
+            }, {
+                "column": "rbc",
+                "description": "基本指标rbc"
+            }, {
+                "column": "plt",
+                "description": "基本指标plt"
+            }]
     },
     "vaccine": {
         "header": "疫苗管理",
-        "description": "用于管理疫苗相关内容",
-        "data": [{
-            "column": "id",
-            "description": "疫苗ID"
-        }, {
-            "column": "name",
-            "description": "中文名称"
-        }, {
-            "column": "price", //TMP
-            "description": "价格"
-        }, {
-            "column": "count",
-            "description": "库存"
-        }]
+        "description": "疫苗相关内容：中文名称、价格、库存",
+        "data": [
+            // {
+            //     "column": "id",
+            //     "description": "疫苗ID"
+            // },
+            {
+                "column": "name",
+                "description": "中文名称"
+            }, {
+                "column": "price", //TMP
+                "description": "价格"
+            }, {
+                "column": "count",
+                "description": "库存"
+            }]
     },
     "inhospital": {
         "header": "住院管理",
-        "description": "用于管理住院相关内容",
-        "data": [{
-            "column": "id",
-            "description": "住院单ID"
-        }, {
-            "column": "patient",
-            "description": "宠物ID"
-        }, {
-            "column": "join_date", //TMP
-            "description": "入院时间"
-        }, {
-            "column": "leave_date",
-            "description": "出院时间"
-        }, {
-            "column": "status",
-            "description": "状态"
-        }]
+        "description": "住院相关内容：宠物ID、入院时间、出院时间、状态",
+        "data": [
+            // {
+            //     "column": "id",
+            //     "description": "住院单ID"
+            // },
+            {
+                "column": "patient",
+                "description": "宠物ID"
+            }, {
+                "column": "join_date", //TMP
+                "description": "入院时间"
+            }, {
+                "column": "leave_date",
+                "description": "出院时间"
+            }, {
+                "column": "status",
+                "description": "状态"
+            }]
     },
     "patient": {
         "header": "宠物管理",
-        "description": "用于管理宠物相关内容",
-        "data": [{
-            "column": "id",
-            "description": "宠物ID"
-        }, {
-            "column": "name",
-            "description": "宠物名称"
-        }, {
-            "column": "description",
-            "description": "备注"
-        }]
+        "description": "宠物相关内容：宠物名称、备注",
+        "data": [
+            // {
+            //     "column": "id",
+            //     "description": "宠物ID"
+            // },
+            {
+                "column": "name",
+                "description": "宠物名称"
+            }, {
+                "column": "description",
+                "description": "备注"
+            }]
     },
     "case": {
         "header": "病例学习",
-        "description": "用于学习病例",
-        "data": [{
-            "column": "id",
-            "description": "病例ID"
-        }, {
-            "column": "name",
-            "description": "病例名称"
-        }],
+        "description": "病例相关内容：病例名称、接诊、病理检查、治疗方案、治疗方案",
+        "data": [
+            // {
+            //     "column": "id",
+            //     "description": "病例ID"
+            // },
+            {
+                "column": "name",
+                "description": "病例名称"
+            }],
         "detail": [{
             "column": "name",
             "description": "病例名称"
@@ -155,17 +171,17 @@ var description = {
 
 function update_item(entity, id) {
     var old = document.getElementById(entity + "_" + id);
-    var tr = "<tr><td>" + old.children[0].innerHTML + "</td>";
-    for (var j = 1; j < description[entity]["data"].length; j++) {
+    var tr = "";
+    for (var j = 0; j < description[entity]["data"].length; j++) {
         tr += "<td><input value=\"" + old.children[j].innerHTML + "\">" + "</td>";
     }
-    tr += "<td>" + get_a_label('update_by_id', '修改', [entity, id]) + get_a_label('update_item_cancel', '取消', [entity, id]) + "</td></tr>";
+    tr += "<td>" + get_a_label('update_by_id', '修改', [entity, id]) + get_a_label('update_item_cancel', '取消', [entity, id]) + "</td>";
     $("#" + entity + "_" + id).html(tr);
 }
 
 function add_item(entity) {
-    var tr = "<tr><td></td>";
-    for (var j = 1; j < description[entity]["data"].length; j++) {
+    var tr = "<tr>";
+    for (var j = 0; j < description[entity]["data"].length; j++) {
         tr += "<td><input required></td>";
     }
     tr += "<td>" + get_a_label('add', '保存', [entity]) + get_a_label('add_item_cancel', '取消', ["tfoot"]) + "</td></tr>";
@@ -249,9 +265,9 @@ function update_item_cancel(entity, id) {
 }
 
 function get_list(entity, add, remove, update, detail) {
-    add = add || "add_item";
-    remove = remove || "delete_by_id";
-    update = update || "update_item";
+    var isOperation = add == null && remove == null && update == null && detail == null ? false : true;
+    var add_operation = add == null ? "" : get_a_label(add, '+', [entity]);
+
     $.ajax({
         type: "GET",
         crossDomain: true,
@@ -264,18 +280,25 @@ function get_list(entity, add, remove, update, detail) {
             for (var i = 0; i < info.length; i++) {
                 thead += "<th>" + info[i]["description"] + "</th>"
             }
-            thead += "<th>操作 " + get_a_label(add, '+', [entity]) + "</th></tr>";
-
+            if (isOperation) {
+                thead += "<th>操作 " + add_operation + "</th>";
+            }
+            thead += "</tr>";
             var tbody = "";
+
             for (var i = 0; i < result["objects"].length; i++) {
                 var id = result["objects"][i]["id"];
+                var remove_operation = remove == null ? "" : get_a_label(remove, ' 删除 ', [entity, id]);
+                var update_operation = update == null ? "" : get_a_label(update, ' 修改 ', [entity, id]);
+                var detail_operation = detail == null ? "" : get_a_label(detail, ' 详情 ', [entity, id]);
                 tbody += "<tr id='" + entity + "_" + id + "'>";
                 for (var j = 0; j < info.length; j++) {
                     tbody += "<td>" + result["objects"][i][info[j]["column"]] + "</td>";
                 }
-                tbody += "<td>" + get_a_label(remove, ' 删除 ', [entity, id])
-                    + get_a_label(update, ' 修改 ', [entity, id])
-                    + get_a_label(detail, ' 详情 ', [entity, id]) + "</td></tr>";
+                if (isOperation) {
+                    tbody += "<td>" + remove_operation + update_operation + detail_operation + "</td>";
+                }
+                tbody += "</tr>";
             }
             $("#thead").html(thead);
             $("#tbody").html(tbody);
@@ -295,7 +318,7 @@ function add(entity) {
     var old = document.getElementById("tfoot").children[0];
     var info = description[entity]["data"];
     var data = {};
-    for (var j = 1; j < info.length; j++) {
+    for (var j = 0; j < info.length; j++) {
         data[info[j]['column']] = old.children[j].children[0].value;
     }
     $.ajax({
@@ -308,7 +331,7 @@ function add(entity) {
         },
         data: JSON.stringify(data),
         success: function () {
-            get_list(entity);
+            get_list(entity, "add_item", "delete_by_id", "update_item");
         },
         error: function () {
             console.log("error");
@@ -407,13 +430,13 @@ function delete_by_id(entity, id) {
 function update_by_id(entity, id) {
     var info = description[entity]["data"];
     var data = {};
-    var tr = "<tr><td>" + id + "</td>";
-    for (var j = 1; j < info.length; j++) {
+    var tr = "";
+    for (var j = 0; j < info.length; j++) {
         var old_value = document.getElementById(entity + "_" + id).children[j].children[0].value;
         tr += "<td>" + old_value + "</td>";
         data[info[j]["column"]] = old_value;
     }
-    tr += "<td>" + get_a_label('delete_by_id', '删除', [entity, id]) + get_a_label('update_item', '修改', [entity, id]) + "</td></tr>";
+    tr += "<td>" + get_a_label('delete_by_id', '删除', [entity, id]) + get_a_label('update_item', '修改', [entity, id]) + "</td>";
 
     $.ajax({
         type: "PUT",
