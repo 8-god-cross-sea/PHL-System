@@ -178,7 +178,7 @@ function add_rich_text_item(entity) {
     for (var j = 0; j < info.length; j++) {
         tr += info[j]["description"] + "<div id='new_" + info[j]["column"] + "'></div>";
     }
-    tr += get_a_label('add_rich_text', '保存', [entity]) + get_a_label('add_item_cancel', '取消', ["add_space"]);
+    tr += get_a_label('add_rich_text', '保存', [entity]) + get_a_label('c', '取消', ["add_space"]);
     $("#add_space").html(tr);
 
     for (var j = 0; j < info.length; j++) {
@@ -194,6 +194,44 @@ function add_rich_text_item(entity) {
             document.getElementById("new_" + info[j]["column"]).innerHTML += "<input required>";
         }
     }
+}
+
+function update_rich_text_item(entity, id) {
+    $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: base_url + entity + "/" + id,
+        xhrFields: {withCredentials: true},
+        success: function (result) {
+            var tr = "";
+            var info = description[entity]["detail"];
+            for (var j = 0; j < info.length; j++) {
+                tr += info[j]["description"] + "<div id='new_" + info[j]["column"] + "'></div>";
+            }
+            tr += get_a_label('update_rich_text', '保存', [entity, id]) + get_a_label('add_item_cancel', '取消', ["add_space"]);
+            $("#add_space").html(tr);
+
+            for (var i = 0; i < info.length; i++) {
+                if (info[i]["rich_text"] == "true") {
+                    var E = window.wangEditor
+                    var editor = new E("#new_" + info[i]["column"]);
+                    editor.customConfig.uploadImgShowBase64 = true;
+                    editor.customConfig.showLinkImg = false;
+                    editor.create();
+                    add_list[info[i]["column"]] = editor;
+                    editor.txt.html(result[info[i]['column']]);
+                }
+                else {
+                    document.getElementById("new_" + info[i]["column"]).innerHTML += "<input required value='" + result[info[i]['column']] + "'>";
+                }
+            }
+            console.log(result);
+        },
+        error: function (error) {
+            console.log(error);
+            window.location.href = 'error.html';
+        }
+    });
 }
 
 function add_item_cancel(div) {
@@ -248,6 +286,7 @@ function get_list(entity, add, remove, update, detail) {
         },
         error: function () {
             console.log("error");
+            window.location.href = 'error.html';
         }
     });
 }
@@ -273,6 +312,7 @@ function add(entity) {
         },
         error: function () {
             console.log("error");
+            window.location.href = 'error.html';
         }
     });
 }
@@ -295,6 +335,31 @@ function add_rich_text(entity) {
         },
         error: function (error) {
             console.log(error);
+            window.location.href = 'error.html';
+        }
+    });
+}
+
+function update_rich_text(entity, id) {
+    var info = description[entity]["detail"];
+    var data = {};
+    for (var j = 0; j < info.length; j++) {
+        data[info[j]['column']] = info[j]["rich_text"] == "true" ? add_list[info[j]["column"]].txt.html() : document.getElementById("add_space").children[j].children[0].value;
+    }
+    $.ajax({
+        type: "PUT",
+        dataType: "json",
+        contentType: 'application/json',
+        url: base_url + entity + "/" + id,
+        xhrFields: {withCredentials: true},
+        data: JSON.stringify(data),
+        success: function () {
+            get_list(entity, 'add_rich_text_item', 'delete_by_id', 'update_rich_text_item', 'get_by_id');
+            add_item_cancel("add_space");
+        },
+        error: function (error) {
+            console.log(error);
+            window.location.href = 'error.html';
         }
     });
 }
@@ -306,10 +371,18 @@ function get_by_id(entity, id) {
         url: base_url + entity + "/" + id,
         xhrFields: {withCredentials: true},
         success: function (result) {
+            var info = description[entity]["detail"];
+            var add_space = "";
+            for (var i = 0; i < info.length; i++) {
+                add_space += "<div id='add_space_" + info[i] + "'>" + result[info[i]['column']] + "</div>";
+            }
+            add_space += get_a_label('add_item_cancel', '收起', ["add_space"]);
+            $("#add_space").html(add_space);
             console.log(result);
         },
         error: function (error) {
             console.log(error);
+            window.location.href = 'error.html';
         }
     });
 }
@@ -322,9 +395,11 @@ function delete_by_id(entity, id) {
         xhrFields: {withCredentials: true},
         success: function () {
             document.getElementById(entity + "_" + id).remove();
+            add_item_cancel("add_space");
         },
         error: function (error) {
             console.log(error);
+            window.location.href = 'error.html';
         }
     });
 }
@@ -352,6 +427,7 @@ function update_by_id(entity, id) {
         },
         error: function (error) {
             console.log(error);
+            window.location.href = 'error.html';
         }
     });
 }
