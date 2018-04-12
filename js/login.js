@@ -1,27 +1,43 @@
-'use strict';
+var base_url = "https://phls.herokuapp.com/api/";
 
-$('#loginBTN').click(function() {
-    var username = $('input[type=email]').val();
-    var password = $('input[type=password]').val();
-
-    USER.login(username, password)
-    .then(function(data){
-        alert("登陆成功！");
-        console.log(data);
-    })
-    .catch(function(data) {
-        alert("登录失败！");
-        console.log(data);
-        return;
+function login() {
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
+    $.ajax({
+        type: "POST",//方法类型
+        dataType: "json",//预期服务器返回的数据类型
+        crossDomain: true,
+        contentType: 'application/json',
+        url: base_url + "user/login",//url
+        data: JSON.stringify({
+            "username": username,
+            "password": password,
+        }),
+        xhrFields: {withCredentials: true},
+        success: function (result) {
+            console.log(result);//打印服务端返回的数据(调试用)
+            if (result.ret_code == 0) {
+                window.location.href = 'study.html';//
+            }
+        },
+        error: function (result) {
+            console.log(result);
+        }
     });
-})
+}
 
-$('#logoutBTN').click(function() {
-    USER.logout()
-    .then(function(data) {
-
-    })
-    .catch(function(data) {
-
+function logout() {
+    $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: base_url + "user/logout",
+        xhrFields: {withCredentials: true},
+        success: function () {
+            window.location.href = 'login.html';
+        },
+        error: function (error) {
+            console.log(error);
+            window.location.href = 'error.html';
+        }
     });
-})
+}
