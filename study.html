@@ -170,8 +170,8 @@ desired effect
                 <li class="active"><a href="#" onclick="get_list('case',null,null,null,'get_by_id')"><i
                         class="fa fa-link"></i>
                     <span>病例学习</span></a></li>
-                <li><a href="#"><i class="fa fa-link"></i> <span>角色扮演</span></a></li>
-                <li class="header">基本信息与结构</li>
+                <li><a href="#" onclick="get_list('role',null,null,null,'get_by_id')"><i class="fa fa-link"></i> <span>角色扮演</span></a></li>
+                <li class="header">医院信息导览</li>
                 <li><a href="#" onclick="get_list('department')"><i class="fa fa-link"></i><span>科室信息</span></a></li>
                 <li><a href="#" onclick="get_list('medicine')"><i class="fa fa-link"></i><span>药品信息</span></a></li>
                 <li><a href="#" onclick="get_list('assay')"><i class="fa fa-link"></i><span>化验信息</span></a>
@@ -329,7 +329,11 @@ immediately after the control sidebar -->
  Both of these plugins are recommended to enhance the
  user experience. -->
 <!-- page script -->
-
+<script>
+    $(function () {
+        get_list('department','add_item', 'delete_by_id', 'update_item');
+    })
+</script>
 </body>
 
 </html>

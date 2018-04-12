@@ -10,7 +10,7 @@ var description = {
             //     "description": "用户ID"
             // },
             {
-                "column": "uername",
+                "column": "username",
                 "description": "用户名称"
             }, {
                 "column": "email", //TMP
@@ -21,7 +21,7 @@ var description = {
             }]
     },
     "department": {
-        "header": "科室管理",
+        "header": "科室信息",
         "description": "科室相关内容：科室名称、描述",
         "data": [
             // {
@@ -37,7 +37,7 @@ var description = {
             }]
     },
     "medicine": {
-        "header": "药品管理",
+        "header": "药品信息",
         "description": "药品相关内容：中文名称、价格、库存",
         "data": [
             // {
@@ -56,7 +56,7 @@ var description = {
             }]
     },
     "assay": {
-        "header": "化验管理",
+        "header": "化验信息",
         "description": "化验相关内容：宠物ID、基本指标wbc、基本指标rbc、基本指标plt",
         "data": [
             // {
@@ -78,7 +78,7 @@ var description = {
             }]
     },
     "vaccine": {
-        "header": "疫苗管理",
+        "header": "疫苗信息",
         "description": "疫苗相关内容：中文名称、价格、库存",
         "data": [
             // {
@@ -97,7 +97,7 @@ var description = {
             }]
     },
     "inhospital": {
-        "header": "住院管理",
+        "header": "住院信息",
         "description": "住院相关内容：宠物ID、入院时间、出院时间、状态",
         "data": [
             // {
@@ -119,7 +119,7 @@ var description = {
             }]
     },
     "patient": {
-        "header": "宠物管理",
+        "header": "宠物信息",
         "description": "宠物相关内容：宠物名称、备注",
         "data": [
             // {
@@ -167,6 +167,81 @@ var description = {
             "rich_text": "true",
         }]
     },
+    "role": {
+        "header": "角色扮演",
+        "description": "角色扮演相关内容：角色名称、描述",
+        "data": [
+            // {
+            //     "column": "id",
+            //     "description": "角色ID"
+            // },
+            {
+                "column": "name",
+                "description": "角色名称"
+            }],
+        "detail": [{
+            "column": "name",
+            "description": "角色名称"
+        }, {
+            "column": "description",
+            "description": "描述",
+            "rich_text": "true",
+        }]
+    },
+    "choice": {
+        "header": "试题管理",
+        "description": "试题管理相关内容：病种、题目、a选项、b选项、c选项、d选项、正确答案",
+        "data": [
+            // {
+            //     "column": "id",
+            //     "description": "角色ID"
+            // },
+            {
+                "column": "case_type",
+                "description": "病种"
+            }, {
+                "column": "description",
+                "description": "题目"
+            }, {
+                "column": "choice_a",
+                "description": "a选项"
+            }, {
+                "column": "choice_b",
+                "description": "b选项"
+            }, {
+                "column": "choice_c",
+                "description": "c选项"
+            }, {
+                "column": "choice_d",
+                "description": "d选项"
+            }, {
+                "column": "answer",
+                "description": "正确答案"
+            }],
+    },
+
+}
+
+function init() {
+    get_list('user', 'add_item', 'delete_by_id', 'update_item');
+    $.ajax({
+        type: "GET",
+        crossDomain: true,
+        dataType: "json",
+        url: base_url + "casetype/?",
+        xhrFields: {withCredentials: true},
+        success: function (result) {
+            var tr = "";
+            for (var i = 0; i < result["objects"].length; i++) {
+                tr += "<li><a href=\"#\" onclick=\"get_list('choice','add_item', 'delete_by_id', 'update_item',null,'case_type=" + result["objects"][i]["id"] + "')\">" + result["objects"][i]["name"] + "</a></li>";
+            }
+            $("#choice_manage").html(tr);
+        },
+        error: function () {
+            console.log("error");
+            window.location.href = 'error.html';
+        }
+    });
 }
 
 function update_item(entity, id) {
@@ -264,7 +339,7 @@ function update_item_cancel(entity, id) {
     old.innerHTML = tr;
 }
 
-function get_list(entity, add, remove, update, detail) {
+function get_list(entity, add, remove, update, detail, search) {
     var isOperation = add == null && remove == null && update == null && detail == null ? false : true;
     var add_operation = add == null ? "" : get_a_label(add, '+', [entity]);
 
@@ -272,7 +347,7 @@ function get_list(entity, add, remove, update, detail) {
         type: "GET",
         crossDomain: true,
         dataType: "json",
-        url: base_url + entity + "/",
+        url: base_url + entity + "/?" + search,
         xhrFields: {withCredentials: true},
         success: function (result) {
             var thead = "<tr>";
