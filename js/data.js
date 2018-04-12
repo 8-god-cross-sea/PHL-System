@@ -68,7 +68,8 @@ var description = {
             // },
             {
                 "column": "patient",
-                "description": "宠物ID",
+                "description": "宠物",
+                "object_column": "name",
             }, {
                 "column": "wbc",
                 "description": "基本指标wbc"
@@ -110,7 +111,8 @@ var description = {
             // },
             {
                 "column": "patient",
-                "description": "宠物ID"
+                "description": "宠物",
+                "object_column": "name",
             }, {
                 "column": "join_date", //TMP
                 "description": "入院时间"
@@ -207,7 +209,8 @@ var description = {
             // },
             {
                 "column": "case_type",
-                "description": "病种"
+                "description": "病种",
+                "object_column": "name",
             }, {
                 "column": "description",
                 "description": "题目",
@@ -234,10 +237,6 @@ var description = {
         "description": "试卷相关内容：试卷名称",
         "data": [
             {
-                "column": "id",
-                "description": "试卷ID"
-            },
-            {
                 "column": "name",
                 "description": "试卷名称",
                 "is_search": "true",
@@ -252,8 +251,9 @@ var description = {
             //     "description": "住院单ID"
             // },
             {
-                "column": "test_paper_id",
-                "description": "试卷ID"
+                "column": "test_paper",
+                "description": "试卷",
+                "object_column": "name",
             }, {
                 "column": "name",
                 "description": "考试名称",
@@ -269,6 +269,10 @@ var description = {
     "unity": {
         "header": "3D医院导览",
         "description": "使用虚拟场景带你领略医院全貌",
+    },
+    "init": {
+        "header": "虚拟宠物医院后台管理系统",
+        "description": "后台数据管理 模块包括人员管理、基本结构与功能管理、职能学习管理、病例管理、测试管理",
     },
 }
 
@@ -289,19 +293,23 @@ function get_user_info() {
 }
 
 function load_hospital_guide() {
+    if ($("#gameContainer").length > 0) {
+        $("#unity").show();
+    } else {
+        $("#unity").html("<div id=\"gameContainer\" style=\"width: 960px; height: 600px;\"></div>");
+        UnityLoader.instantiate("gameContainer"
+            , "https://3dhospital-1251780400.cos.ap-shanghai.myqcloud.com/3DHospital/Build/game.json", {onProgress: UnityProgress});
+    }
     $("#thead").html("");
     $("#tbody").html("");
     $("#tfoot").html("");
     $("#header").html(description["unity"]["header"]);
     $("#description").html(description["unity"]["description"]);
-    $("#unity").html("<div id=\"gameContainer\" style=\"width: 960px; height: 600px;\"></div>");
-    UnityLoader.instantiate("gameContainer"
-        , "https://3dhospital-1251780400.cos.ap-shanghai.myqcloud.com/3DHospital/Build/game.json", {onProgress: UnityProgress});
 }
 
 function init() {
     get_user_info();
-    get_list('user', 'add_item', 'delete_by_id', 'update_item');
+    // get_list('user', 'add_item', 'delete_by_id', 'update_item');
     $.ajax({
         type: "GET",
         crossDomain: true,
@@ -316,9 +324,14 @@ function init() {
             $("#choice_manage").html(tr);
         },
         error: function () {
-            console.log("error");
         }
     });
+    $("#search_div").hide();
+    $("#thead").html("");
+    $("#tbody").html("");
+    $("#tfoot").html("");
+    $("#header").html(description["init"]["header"]);
+    $("#description").html(description["init"]["description"]);
 }
 
 function update_item(entity, id) {
@@ -395,9 +408,7 @@ function update_rich_text_item(entity, id) {
             }
             console.log(result);
         },
-        error: function (error) {
-            console.log(error);
-        }
+        error: function (error) {}
     });
 }
 
@@ -458,7 +469,11 @@ function get_list(entity, add, remove, update, detail, search) {
                 var detail_operation = detail == null || detail == 'undefined' ? "" : get_a_label(detail, ' 详情 ', [entity, id]);
                 tbody += "<tr id='" + entity + "_" + id + "'>";
                 for (var j = 0; j < info.length; j++) {
-                    tbody += "<td>" + result["objects"][i][info[j]["column"]] + "</td>";
+                    if (info[j]["object_column"] != null) {
+                        tbody += "<td>" + result["objects"][i][info[j]["column"]][info[j]["object_column"]] + "</td>";
+                    } else {
+                        tbody += "<td>" + result["objects"][i][info[j]["column"]] + "</td>";
+                    }
                 }
                 if (isOperation) {
                     tbody += "<td>" + remove_operation + update_operation + detail_operation + "</td>";
@@ -469,13 +484,12 @@ function get_list(entity, add, remove, update, detail, search) {
             $("#tbody").html(tbody);
             $("#tfoot").html("");
             $("#add_space").html("");
-            $("#unity").html("");
+            $("#search_div").show();
+            $("#unity").hide();
             $("#header").html(description[entity]["header"]);
             $("#description").html(description[entity]["description"]);
         },
-        error: function () {
-            console.log("error");
-        }
+        error: function () {}
     });
 }
 
@@ -499,7 +513,6 @@ function add(entity) {
             get_list(entity, "add_item", "delete_by_id", "update_item");
         },
         error: function () {
-            console.log("error");
         }
     });
 }
@@ -520,9 +533,7 @@ function add_rich_text(entity) {
         success: function () {
             get_list(entity, 'add_rich_text_item', 'delete_by_id', 'update_item', 'get_by_id');
         },
-        error: function (error) {
-            console.log(error);
-        }
+        error: function (error) {}
     });
 }
 
@@ -543,9 +554,7 @@ function update_rich_text(entity, id) {
             get_list(entity, 'add_rich_text_item', 'delete_by_id', 'update_rich_text_item', 'get_by_id');
             add_item_cancel("add_space");
         },
-        error: function (error) {
-            console.log(error);
-        }
+        error: function (error) {}
     });
 }
 
@@ -565,9 +574,7 @@ function get_by_id(entity, id) {
             $("#add_space").html(add_space);
             console.log(result);
         },
-        error: function (error) {
-            console.log(error);
-        }
+        error: function () {}
     });
 }
 
@@ -581,9 +588,7 @@ function delete_by_id(entity, id) {
             document.getElementById(entity + "_" + id).remove();
             add_item_cancel("add_space");
         },
-        error: function (error) {
-            console.log(error);
-        }
+        error: function (error) {}
     });
 }
 
@@ -608,9 +613,7 @@ function update_by_id(entity, id) {
         success: function () {
             $("#" + entity + "_" + id).html(tr);
         },
-        error: function (error) {
-            console.log(error);
-        }
+        error: function (error) {}
     });
 }
 
