@@ -189,8 +189,8 @@ var description = {
         }]
     },
     "choice": {
-        "header": "试题管理",
-        "description": "试题管理相关内容：病种、题目、a选项、b选项、c选项、d选项、正确答案",
+        "header": "试题信息",
+        "description": "试题相关内容：病种、题目、a选项、b选项、c选项、d选项、正确答案",
         "data": [
             // {
             //     "column": "id",
@@ -219,7 +219,41 @@ var description = {
                 "description": "正确答案"
             }],
     },
-
+    "testpaper": {
+        "header": "试卷信息",
+        "description": "试卷相关内容：试卷名称",
+        "data": [
+            {
+                "column": "id",
+                "description": "试卷ID"
+            },
+            {
+                "column": "name",
+                "description": "试卷名称"
+            }]
+    },
+    "exam": {
+        "header": "考试信息",
+        "description": "考试相关内容：试卷ID、考试名称、考试时长、考试时间",
+        "data": [
+            // {
+            //     "column": "id",
+            //     "description": "住院单ID"
+            // },
+            {
+                "column": "test_paper_id",
+                "description": "试卷ID"
+            },{
+                "column": "name",
+                "description": "考试名称"
+            },{
+                "column": "duration",
+                "description": "考试时长"
+            },{
+                "column": "start",
+                "description": "考试时间"
+            }]
+    },
 }
 
 function init() {
