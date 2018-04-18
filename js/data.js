@@ -251,7 +251,7 @@ var description = {
         "detail": [
             {
                 "column": "id",
-                "description": "题目ID",
+                "description": "试题ID",
             }, {
                 "column": "case_type",
                 "description": "病种",
@@ -319,21 +319,39 @@ var description = {
     },
 }
 
-	var data = {
-		"name": $('#add-name').val(),
-		"id": $('#add-id').val(),
-		"desc": $('#add-desc').val()
-	}
+function get_user_info() {
+    $.ajax({
+        type: "GET",
+        crossDomain: true,
+        dataType: "json",
+        url: base_url + "user/me",
+        xhrFields: {withCredentials: true},
+        success: function (result) {
+            $(".username_p").html(result["username"]);
+        },
+        error: function () {
+            window.location.href = 'login.html';
+        }
+    });
+}
 
-	DEMO.data.change(data)
-    .then(function(data){
-        console.log(data);
-        $('#example2').DataTable().ajax.reload();
-        $("#modal-add").modal('hide');
+function load_hospital_guide() {
+    if ($("#gameContainer").length > 0) {
+        $("#unity").show();
+    } else {
+        $("#unity").html("<div id=\"gameContainer\" style=\"width: 960px; height: 600px;\"></div>");
+        UnityLoader.instantiate("gameContainer"
+            , "https://3dhospital-1251780400.cos.ap-shanghai.myqcloud.com/3DHospital/Build/game.json", {onProgress: UnityProgress});
+    }
+    $("#thead").html("");
+    $("#tbody").html("");
+    $("#tfoot").html("");
+    $("#header").html(description["unity"]["header"]);
+    $("#description").html(description["unity"]["description"]);
+}
 
 function init() {
     get_user_info();
-    // get_list('user', 'add_item', 'delete_by_id', 'update_item');
     $.ajax({
         type: "GET",
         crossDomain: true,
@@ -437,10 +455,11 @@ function update_rich_text_item(entity, id) {
         error: function (error) {
         }
     });
-})
+}
 
-$('#edit-save').click(function() {
-	console.log("saved");
+function add_item_cancel(div) {
+    $("#" + div).html("");
+}
 
 function update_item_cancel(entity, id) {
     var old = document.getElementById(entity + "_" + id);
@@ -452,11 +471,17 @@ function update_item_cancel(entity, id) {
     old.innerHTML = tr;
 }
 
-	DEMO.data.change(data)
-    .then(function(data){
-        console.log(data);
-        $('#example2').DataTable().ajax.reload();
-        $("#modal-add").modal('hide');
+function search_list(entity, add, remove, update, detail) {
+    var info = description[entity]["detail"] == null ? description[entity]["data"] : description[entity]["detail"];
+    var query = "";
+    for (var i = 0; i < info.length; i++) {
+        if (info[i]["is_search"] != null && info[i]["is_search"] == "true") {
+            query += info[i]["column"] + "__like=%" + $("#search_input").val() + "%&";
+        }
+    }
+    query += "result__like=%" + $("#search_input").val() + "%";
+    get_list(entity, add, remove, update, detail, query);
+}
 
 function get_list(entity, add, remove, update, detail, search) {
     var isOperation = add == null && remove == null && update == null && detail == null ? false : true;
@@ -520,7 +545,7 @@ function get_list(entity, add, remove, update, detail, search) {
         error: function () {
         }
     });
-})
+}
 
 function add(entity) {
     var old = document.getElementById("tfoot").children[0];
@@ -629,8 +654,7 @@ function detail_sub_table(entity, id) {
             for (var i = 0; i < info.length; i++) {
                 sub_head += "<th>" + info[i]["description"] + "</th>"
             }
-            sub_head += "<th>操作 " + "+" + "</th>";
-            // get_a_label(add_sub_table_item, '+', [entity])
+            sub_head += "<th>操作 " + get_a_label("add_sub_table_item", '+', [entity]) + "</th>";
             sub_head += "</tr>";
             var sub_body = "";
             for (var i = 0; i < result[description[entity]["detail_column"]].length; i++) {
@@ -663,10 +687,10 @@ function detail_sub_table(entity, id) {
 function add_sub_table_item(entity) {
     var tr = "<tr><td></td>";
     for (var j = 0; j < description[entity]["detail"].length; j++) {
-        if (description[entity]["detail"][j] == "id") {
+        if (description[entity]["detail"][j]["column"] == "id") {
             tr += "<td><input required></td>";
         } else {
-            tr += "<td></td>"
+            tr += "<td></td>";
         }
     }
     tr += "<td>" + get_a_label('add_sub_table', '保存', [entity]) + get_a_label('add_item_cancel', '取消', ["sub_tfoot"]) + "</td></tr>";
@@ -674,7 +698,17 @@ function add_sub_table_item(entity) {
 }
 
 function add_sub_table(entity, id, sub_entity, sub_id) {
-
+    $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: base_url + sub_entity + "/" + sub_id,
+        xhrFields: {withCredentials: true},
+        success: function () {
+            detail_sub_table(entity, id);
+        },
+        error: function () {
+        }
+    });
 }
 
 function delete_sub_table(entity, id, sub_entity, sub_id) {
@@ -698,10 +732,11 @@ function delete_by_id(entity, id) {
 
 function update_by_id(entity, id) {
     var info = description[entity]["data"];
+    var old = document.getElementById(entity + "_" + id);
     var data = {};
-    var tr = "";
+    var tr = "<td>" + old.children[0].innerHTML + "</td>";
     for (var j = 0; j < info.length; j++) {
-        var old_value = document.getElementById(entity + "_" + id).children[j].children[0].value;
+        var old_value = old.children[j + 1].children[0].value;
         tr += "<td>" + old_value + "</td>";
         data[info[j]["column"]] = old_value;
     }
