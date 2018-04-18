@@ -63,11 +63,11 @@ desired effect
     <!-- Main Header -->
     <header class="main-header">
         <!-- Logo -->
-        <a href="#" class="logo">
+        <a href="index.html" class="logo">
             <!-- mini logo for sidebar mini 50x50 pixels -->
             <span class="logo-mini"><b>P</b>HL</span>
             <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg"><b>宠物医院</b>管理系统</span>
+            <span class="logo-lg"><b>Pet</b>HospitalSys</span>
         </a>
         <!-- Header Navbar -->
         <nav class="navbar navbar-static-top" role="navigation">
@@ -78,6 +78,30 @@ desired effect
             <!-- Navbar Right Menu -->
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
+                    <!-- Notifications Menu -->
+                    <li class="dropdown notifications-menu">
+                        <!-- Menu toggle button -->
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-bell-o"></i>
+                            <span class="label label-warning">10</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="header">You have 10 notifications</li>
+                            <li>
+                                <!-- Inner Menu: contains the notifications -->
+                                <ul class="menu">
+                                    <li>
+                                        <!-- start notification -->
+                                        <a href="#">
+                                            <i class="fa fa-users text-aqua"></i> 5 new members joined today
+                                        </a>
+                                    </li>
+                                    <!-- end notification -->
+                                </ul>
+                            </li>
+                            <li class="footer"><a href="#">View all</a></li>
+                        </ul>
+                    </li>
                     <!-- User Account Menu -->
                     <li class="dropdown user user-menu">
                         <!-- Menu Toggle Button -->
@@ -85,23 +109,39 @@ desired effect
                             <!-- The user image in the navbar-->
                             <img src="assets/img/user2-160x160.jpg" class="user-image" alt="User Image">
                             <!-- hidden-xs hides the username on small devices so only the image appears. -->
-                            <span class="hidden-xs"><span class="username_p"></span></span>
+                            <span class="hidden-xs">Alexander Pierce</span>
                         </a>
                         <ul class="dropdown-menu">
                             <!-- The user image in the menu -->
                             <li class="user-header">
                                 <img src="assets/img/user2-160x160.jpg" class="img-circle" alt="User Image">
-                                <p class="username_p"></p>
-                                <small>虚拟宠物医院</small>
+                                <p>
+                                    Alexander Pierce - Web Developer
+                                    <small>Member since Nov. 2012</small>
+                                </p>
                             </li>
                             <!-- Menu Body -->
+                            <!-- <li class="user-body">
+            <div class="row">
+              <div class="col-xs-4 text-center">
+                <a href="#">Followers</a>
+              </div>
+              <div class="col-xs-4 text-center">
+                <a href="#">Sales</a>
+              </div>
+              <div class="col-xs-4 text-center">
+                <a href="#">Friends</a>
+              </div>
+            </div>
+            /.row
+          </li> -->
                             <!-- Menu Footer-->
                             <li class="user-footer">
                                 <div class="pull-left">
-                                    <a href="study.html" class="btn btn-default btn-flat">进入学习系统</a>
+                                    <a href="#" class="btn btn-default btn-flat">Profile</a>
                                 </div>
                                 <div class="pull-right">
-                                    <a href="#" class="btn btn-default btn-flat" onclick="logout()">注销</a>
+                                    <a href="#" class="btn btn-default btn-flat">Sign out</a>
                                 </div>
                             </li>
                         </ul>
@@ -115,66 +155,39 @@ desired effect
         <!-- sidebar: style can be found in sidebar.less -->
         <section class="sidebar">
             <!-- Sidebar user panel (optional) -->
-            <!--<div class="user-panel">-->
-            <!--<div class="pull-left image">-->
-            <!--<img src="assets/img/user2-160x160.jpg" class="img-circle" alt="User Image">-->
-            <!--</div>-->
-            <!--<div class="pull-left info">-->
-            <!--<p class="username_p">f</p>-->
-            <!--</div>-->
-            <!--</div>-->
+            <div class="user-panel">
+                <div class="pull-left image">
+                    <img src="assets/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                </div>
+                <div class="pull-left info">
+                    <p>Alexander Pierce</p>
+                </div>
+            </div>
             <!-- Sidebar Menu -->
             <ul class="sidebar-menu" data-widget="tree">
+                <li class="header">HEADER</li>
                 <!-- Optionally, you can add icons to the links -->
-                <!--用户模块管理-->
-                <li class="header">用户管理</li>
-                <li class="active"><a href="#" onclick="get_list('user','add_item', 'delete_by_id', 'update_item')"><i
-                        class="fa fa-link"></i>
+                <li class="active"><a href="#" onclick="get_list('user')"><i class="fa fa-link"></i>
                     <span>人员管理</span></a></li>
-
-                <!--系统模块管理-->
-                <li class="header">基本结构与功能管理</li>
-                <li class="active"><a href="#"
-                                      onclick="get_list('department','add_item', 'delete_by_id', 'update_item')">
-                    <i class="fa fa-link"></i><span>科室管理</span></a></li>
-                <li class="active"><a href="#" onclick="get_list('medicine','add_item', 'delete_by_id', 'update_item')">
-                    <i class="fa fa-link"></i><span>药品管理</span></a></li>
-                <li class="active"><a href="#" onclick="get_list('assay','add_item', 'delete_by_id', 'update_item')">
-                    <i class="fa fa-link"></i><span>化验管理</span></a></li>
-                <li class="active"><a href="#" onclick="get_list('vaccine','add_item', 'delete_by_id', 'update_item')">
-                    <i class="fa fa-link"></i><span>疫苗管理</span></a></li>
-                <li class="active"><a href="#"
-                                      onclick="get_list('inhospital','add_item', 'delete_by_id', 'update_item')">
-                    <i class="fa fa-link"></i><span>住院管理</span></a></li>
-                <li class="active"><a href="#" onclick="get_list('patient','add_item', 'delete_by_id', 'update_item')">
-                    <i class="fa fa-link"></i><span>宠物管理</span></a></li>
-
-                <!--职能学习模块管理-->
-                <li class="header">职能学习管理</li>
-                <li class="active"><a href="#"
-                                      onclick="get_list('role','add_rich_text_item','delete_by_id','update_rich_text_item','get_by_id')">
-                    <i class="fa fa-link"></i><span>角色扮演模式</span></a></li>
-                <li class="active"><a href="#"
-                                      onclick="get_list('case','add_rich_text_item','delete_by_id','update_rich_text_item','get_by_id')"><i
-                        class="fa fa-link"></i> <span>病例学习模式</span></a></li>
-
-                <!--病例管理-->
-                <li class="header">病例管理</li>
-                <li class="active"><a href="#"
-                                      onclick="get_list('case','add_rich_text_item','delete_by_id','update_rich_text_item','get_by_id')"><i
-                        class="fa fa-link"></i> <span>病例管理</span></a></li>
-
-                <!--测试模块管理-->
-                <li class="header">测试管理</li>
+                <li class="active"><a href="#" onclick="get_list('user')"><i class="fa fa-link"></i>
+                    <span>病例管理</span></a></li>
                 <li class="treeview">
-                    <a href="#"><i class="fa fa-link"></i> <span>试题管理</span>
-                        <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+                    <a href="#"><i class="fa fa-link"></i> <span>基本结构与功能管理</span>
+                        <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
                     </a>
-                    <ul class="treeview-menu" id="choice_manage">
+                    <ul class="treeview-menu">
+                        <li><a href="#" onclick="get_list('department')">科室管理</a></li>
+                        <li><a href="#" onclick="get_list('medicine')">药品管理</a></li>
+                        <li><a href="#" onclick="get_list('assay')">化验管理</a></li>
+                        <li><a href="#" onclick="get_list('vaccine')">疫苗管理</a></li>
+                        <li><a href="#" onclick="get_list('inhospital')">住院管理</a></li>
+                        <li><a href="#" onclick="get_list('patient')">宠物管理</a></li>
                     </ul>
                 </li>
                 <li class="active"><a href="#"
-                                      onclick="get_list('testpaper','add_item','delete_by_id','update_item')"><i
+                                      onclick="get_list('testpaper','add_item','delete_by_id','update_item','detail_sub_table')"><i
                         class="fa fa-link"></i>
                     <span>试卷管理</span></a>
                 </li>
@@ -193,25 +206,18 @@ desired effect
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                <p id="header"></p>
-                <small id="description"></small>
-                <div id="search_div" style="float: right" hidden>
-                    <input id="search_input">
-                    <a id="search_button" style="cursor: pointer">搜索</a>
-                </div>
+                <p id="header">Page Header</p>
+                <small id="description">Optional description</small>
             </h1>
         </section>
         <!-- Main content -->
         <section class="content container-fluid">
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="box">
-                        <!-- <div class="box-header">
-                            <h3 class="box-title">Hover Data Table</h3>
-                        </div> -->
+                    <div id="table" class="box">
                         <!-- /.box-header -->
                         <div class="box-body">
-                            <table id="example2" class="table table-bordered table-hover">
+                            <table id="example" class="table table-bordered table-hover">
                                 <thead id="thead">
                                 </thead>
                                 <tbody id="tbody">
@@ -219,9 +225,23 @@ desired effect
                                 <tfoot id="tfoot">
                                 </tfoot>
                             </table>
+
                             <div id="add_space"></div>
                         </div>
                         <!-- /.box-body -->
+                    </div>
+                    <div id="sub_table" class="box">
+                        <div class="box-header">
+                            <h3 class="box-title" id="sub_table_title"></h3>
+                        </div>
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead id="sub_thead">
+                            </thead>
+                            <tbody id="sub_tbody">
+                            </tbody>
+                            <tfoot id="sub_tfoot">
+                            </tfoot>
+                        </table>
                     </div>
                     <!-- /.box -->
                 </div>
@@ -332,15 +352,15 @@ immediately after the control sidebar -->
 <!-- FastClick -->
 <script src="assets/js/fastclick.js"></script>
 <script src="assets/js/wangEditor.min.js"></script>
-<script src="js/data.js"></script>
-<script src="js/login.js"></script>
+<script src="js/operation.js"></script>
+<script src="js/operation.js"></script>
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
  Both of these plugins are recommended to enhance the
  user experience. -->
 <!-- page script -->
 <script>
     $(function () {
-        init();
+        get_list('department');
     })
 </script>
 </body>
