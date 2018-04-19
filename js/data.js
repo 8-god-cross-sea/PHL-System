@@ -1,5 +1,6 @@
 var base_url = "https://phls.herokuapp.com/api/";
-var add_list = {};
+var add_list = new Array();
+var sub_list = {};
 var description = {
     "user": {
         "header": "用户管理",
@@ -287,7 +288,7 @@ var description = {
     },
     "exam": {
         "header": "考试信息",
-        "description": "考试相关内容：试卷ID、考试名称、考试时长、考试时间",
+        "description": "考试相关内容：考试名称、考试时长、考试时间",
         "data": [
             // {
             //     "column": "id",
@@ -317,8 +318,26 @@ var description = {
         "header": "虚拟宠物医院后台管理系统",
         "description": "后台数据管理 模块包括人员管理、基本结构与功能管理、职能学习管理、病例管理、测试管理",
     },
+    "default": {
+        "add": "table_add_item",
+        "remove": "table_delete_item",
+        "update": "table_update_item",
+        "detail": "editor_detail"
+    }
+}
+var function_name = {
+    "table_add_item": "+",
+    "editor_add_item": "+",
+    "table_delete_item": " 删除 ",
+    "table_update_item": " 修改 ",
+    "editor_update_item": " 修改 ",
+    "editor_detail": " 详情 ",
+    "subTable_list": " 详情 ",
+    "exam_start": "参加考试"
 }
 
+
+/*------------------------START 初始化相关操作------------------------*/
 function get_user_info() {
     $.ajax({
         type: "GET",
@@ -361,7 +380,7 @@ function init() {
         success: function (result) {
             var tr = "";
             for (var i = 0; i < result["objects"].length; i++) {
-                tr += "<li><a href=\"#\" onclick=\"get_list('choice','add_item', 'delete_by_id', 'update_item',null,'case_type=" + result["objects"][i]["id"] + "')\">" + result["objects"][i]["name"] + "</a></li>";
+                tr += "<li><a href=\"#\" onclick=\"table_list('choice','table_add_item', 'table_delete_item', 'table_update_item',null,'case_type=" + result["objects"][i]["id"] + "')\">" + result["objects"][i]["name"] + "</a></li>";
             }
             $("#choice_manage").html(tr);
         },
@@ -378,100 +397,117 @@ function init() {
     $("#description").html(description["init"]["description"]);
 }
 
-function update_item(entity, id) {
-    var old = document.getElementById(entity + "_" + id);
-    var tr = "<td>" + old.children[0].innerHTML + "</td>";
-    for (var j = 0; j < description[entity]["data"].length; j++) {
-        tr += "<td><input value=\"" + old.children[j + 1].innerHTML + "\">" + "</td>";
-    }
-    tr += "<td>" + get_a_label('update_by_id', '修改', [entity, id]) + get_a_label('update_item_cancel', '取消', [entity, id]) + "</td>";
-    $("#" + entity + "_" + id).html(tr);
-}
 
-function add_item(entity) {
+/*------------------------START 对主表格的增删改查操作------------------------*/
+function table_add_item(entity, add, remove, update, detail, search) {
     var tr = "<tr><td></td>";
     for (var j = 0; j < description[entity]["data"].length; j++) {
         tr += "<td><input required></td>";
     }
-    tr += "<td>" + get_a_label('add', '保存', [entity]) + get_a_label('add_item_cancel', '取消', ["tfoot"]) + "</td></tr>";
+    tr += "<td>" + get_a_label('table_add', '保存', [entity, add, remove, update, detail, search]) + get_a_label('remove_label', '取消', ["tfoot"]) + "</td></tr>";
     $("#tfoot").html(tr);
 }
 
-function add_rich_text_item(entity) {
-    var tr = "";
-    var info = description[entity]["detail"];
-    for (var j = 0; j < info.length; j++) {
-        tr += info[j]["description"] + "<div id='new_" + info[j]["column"] + "'></div>";
-    }
-    tr += get_a_label('add_rich_text', '保存', [entity]) + get_a_label('c', '取消', ["add_space"]);
-    $("#add_space").html(tr);
-
-    for (var j = 0; j < info.length; j++) {
-        if (info[j]["rich_text"] == "true") {
-            var E = window.wangEditor
-            var editor = new E("#new_" + info[j]["column"]);
-            editor.customConfig.uploadImgShowBase64 = true;
-            editor.customConfig.showLinkImg = false;
-            editor.create();
-            add_list[info[j]["column"]] = editor;
-        }
-        else {
-            document.getElementById("new_" + info[j]["column"]).innerHTML += "<input required>";
+function table_update_item(entity, id) {
+    var old = document.getElementById(entity + "_" + id);
+    var tr = "<td>" + old.children[0].innerHTML + "</td>";
+    for (var j = 0; j < description[entity]["data"].length; j++) {
+        if (description[entity]["data"][j]["object_column"] == null) {
+            tr += "<td><input value=\"" + old.children[j + 1].innerHTML + "\">" + "</td>";
+        } else {
+            tr += "<td>" + old.children[j + 1].innerHTML + "</td>";
         }
     }
+    tr += "<td>" + get_a_label('table_update', '修改', [entity, id]) + get_a_label('table_update_cancel', '取消', [entity, id]) + "</td>";
+    $("#" + entity + "_" + id).html(tr);
 }
 
-function update_rich_text_item(entity, id) {
+function table_delete_item(entity, id, add, remove, update, detail, search) {
     $.ajax({
-        type: "GET",
+        type: "DELETE",
         dataType: "json",
         url: base_url + entity + "/" + id,
         xhrFields: {withCredentials: true},
-        success: function (result) {
-            var tr = "";
-            var info = description[entity]["detail"];
-            for (var j = 0; j < info.length; j++) {
-                tr += info[j]["description"] + "<div id='new_" + info[j]["column"] + "'></div>";
-            }
-            tr += get_a_label('update_rich_text', '保存', [entity, id]) + get_a_label('add_item_cancel', '取消', ["add_space"]);
-            $("#add_space").html(tr);
-
-            for (var i = 0; i < info.length; i++) {
-                if (info[i]["rich_text"] == "true") {
-                    var E = window.wangEditor
-                    var editor = new E("#new_" + info[i]["column"]);
-                    editor.customConfig.uploadImgShowBase64 = true;
-                    editor.customConfig.showLinkImg = false;
-                    editor.create();
-                    add_list[info[i]["column"]] = editor;
-                    editor.txt.html(result[info[i]['column']]);
-                }
-                else {
-                    document.getElementById("new_" + info[i]["column"]).innerHTML += "<input required value='" + result[info[i]['column']] + "'>";
-                }
-            }
-            console.log(result);
+        success: function () {
+            table_list(entity, add, remove, update, detail, search);
         },
         error: function (error) {
         }
     });
 }
 
-function add_item_cancel(div) {
-    $("#" + div).html("");
+function table_add(entity, add, remove, update, detail, search) {
+    var old = document.getElementById("tfoot").children[0];
+    var info = description[entity]["data"];
+    var data = {};
+    for (var j = 0; j < info.length; j++) {
+        data[info[j]['column']] = old.children[j + 1].children[0].value;
+    }
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        contentType: 'application/json',
+        url: base_url + entity + "/",
+        xhrFields: {
+            withCredentials: true
+        },
+        data: JSON.stringify(data),
+        success: function () {
+            table_list(entity, add, remove, update, detail, search);
+        },
+        error: function () {
+        }
+    });
 }
 
-function update_item_cancel(entity, id) {
+function table_update(entity, id) {
+    var info = description[entity]["data"];
+    var old = document.getElementById(entity + "_" + id);
+    var data = {};
+    var tr = "<td>" + old.children[0].innerHTML + "</td>";
+    for (var j = 0; j < info.length; j++) {
+        var old_value;
+        if (info[j]["object_column"] == null) {
+            old_value = old.children[j + 1].children[0].value;
+            data[info[j]["column"]] = old_value;
+        } else {
+            old_value = old.children[j + 1].innerHTML;
+            // data[info[j]["object_column"]] = old_value;
+        }
+        tr += "<td>" + old_value + "</td>";
+    }
+    tr += "<td>" + get_a_label('table_delete_item', '删除', [entity, id]) + get_a_label('table_update_item', '修改', [entity, id]) + "</td>";
+
+    $.ajax({
+        type: "PUT",
+        dataType: "json",
+        contentType: 'application/json',
+        url: base_url + entity + "/" + id,
+        data: JSON.stringify(data),
+        xhrFields: {withCredentials: true},
+        success: function () {
+            $("#" + entity + "_" + id).html(tr);
+        },
+        error: function (error) {
+        }
+    });
+}
+
+function table_update_cancel(entity, id) {
     var old = document.getElementById(entity + "_" + id);
     var tr = "<tr><td>" + old.children[0].innerHTML + "</td>";
     for (var j = 0; j < description[entity]["data"].length; j++) {
-        tr += "<td>" + old.children[j + 1].children[0].value + "</td>";
+        if (description[entity]["data"][j]["object_column"] == null) {
+            tr += "<td>" + old.children[j + 1].children[0].value + "</td>";
+        } else {
+            tr += "<td>" + old.children[j + 1].innerHTML + "</td>";
+        }
     }
-    tr += "<td>" + get_a_label('delete_by_id', '删除', [entity, id]) + get_a_label('update_item', '修改', [entity, id]) + "</td></tr>";
+    tr += "<td>" + get_a_label('table_delete_item', '删除', [entity, id]) + get_a_label('table_update_item', '修改', [entity, id]) + "</td></tr>";
     old.innerHTML = tr;
 }
 
-function search_list(entity, add, remove, update, detail) {
+function table_search(entity, add, remove, update, detail) {
     var info = description[entity]["detail"] == null ? description[entity]["data"] : description[entity]["detail"];
     var query = "";
     for (var i = 0; i < info.length; i++) {
@@ -480,14 +516,14 @@ function search_list(entity, add, remove, update, detail) {
         }
     }
     query += "result__like=%" + $("#search_input").val() + "%";
-    get_list(entity, add, remove, update, detail, query);
+    table_list(entity, add, remove, update, detail, query);
 }
 
-function get_list(entity, add, remove, update, detail, search) {
+function table_list(entity, add, remove, update, detail, search) {
     var isOperation = add == null && remove == null && update == null && detail == null ? false : true;
-    var add_operation = add == null || add == 'undefined' ? "" : get_a_label(add, '+', [entity]);
-    var query = search == null ? "" : "?" + search;
-    $("#search_button").attr('onclick', 'search_list(\'' + entity + '\',\'' + add + '\',\'' + remove + '\',\'' + update + '\',\'' + detail + '\');');
+    var add_operation = add == null || add == 'undefined' ? "" : get_a_label(add, function_name[add], [entity, add, remove, update, detail, search]);
+    var query = search == null || search == 'undefined' ? "" : "?" + search;
+    $("#search_button").attr('onclick', 'table_search(\'' + entity + '\',\'' + add + '\',\'' + remove + '\',\'' + update + '\',\'' + detail + '\');');
     if (search == null) {
         $("#search_input").val("");
     }
@@ -511,13 +547,13 @@ function get_list(entity, add, remove, update, detail, search) {
 
             for (var i = 0; i < result["objects"].length; i++) {
                 var id = result["objects"][i]["id"];
-                var remove_operation = remove == null || remove == 'undefined' ? "" : get_a_label(remove, ' 删除 ', [entity, id]);
-                var update_operation = update == null || update == 'undefined' ? "" : get_a_label(update, ' 修改 ', [entity, id]);
-                var detail_operation = detail == null || detail == 'undefined' ? "" : get_a_label(detail, ' 详情 ', [entity, id]);
+                var remove_operation = remove == null || remove == 'undefined' ? "" : get_a_label(remove, function_name[remove], [entity, id, add, remove, update, detail, search]);
+                var update_operation = update == null || update == 'undefined' ? "" : get_a_label(update, function_name[update], [entity, id]);
+                var detail_operation = detail == null || detail == 'undefined' ? "" : get_a_label(detail, function_name[detail], [entity, id]);
                 tbody += "<tr id='" + entity + "_" + id + "'><td>" + (i + 1) + "</td>";
                 for (var j = 0; j < info.length; j++) {
                     if (info[j]["object_column"] != null) {
-                        tbody += "<td>" + result["objects"][i][info[j]["column"]][info[j]["object_column"]] + "</td>";
+                        tbody += "<td id='" + result["objects"][i][info[j]["column"]]["id"] + "'>" + result["objects"][i][info[j]["column"]][info[j]["object_column"]] + "</td>";
                     } else {
                         if (info[j]["map"] != null) {
                             tbody += "<td>" + info[j]["map"][result["objects"][i][info[j]["column"]]] + "</td>";
@@ -547,31 +583,89 @@ function get_list(entity, add, remove, update, detail, search) {
     });
 }
 
-function add(entity) {
-    var old = document.getElementById("tfoot").children[0];
-    var info = description[entity]["data"];
-    var data = {};
+
+/*------------------------START 对富文本框的增删改查操作------------------------*/
+function editor_add_item(entity) {
+    var tr = "";
+    var info = description[entity]["detail"];
     for (var j = 0; j < info.length; j++) {
-        data[info[j]['column']] = old.children[j + 1].children[0].value;
+        tr += info[j]["description"] + "<div id='new_" + info[j]["column"] + "'></div>";
     }
+    tr += get_a_label('editor_add', '保存', [entity]) + get_a_label('c', '取消', ["add_space"]);
+    $("#add_space").html(tr);
+
+    for (var j = 0; j < info.length; j++) {
+        if (info[j]["rich_text"] == "true") {
+            var E = window.wangEditor
+            var editor = new E("#new_" + info[j]["column"]);
+            editor.customConfig.uploadImgShowBase64 = true;
+            editor.customConfig.showLinkImg = false;
+            editor.create();
+            add_list[info[j]["column"]] = editor;
+        }
+        else {
+            document.getElementById("new_" + info[j]["column"]).innerHTML += "<input required>";
+        }
+    }
+}
+
+function editor_update_item(entity, id) {
     $.ajax({
-        type: "POST",
+        type: "GET",
         dataType: "json",
-        contentType: 'application/json',
-        url: base_url + entity + "/",
-        xhrFields: {
-            withCredentials: true
+        url: base_url + entity + "/" + id,
+        xhrFields: {withCredentials: true},
+        success: function (result) {
+            var tr = "";
+            var info = description[entity]["detail"];
+            for (var j = 0; j < info.length; j++) {
+                tr += info[j]["description"] + "<div id='new_" + info[j]["column"] + "'></div>";
+            }
+            tr += get_a_label('editor_update', '保存', [entity, id]) + get_a_label('remove_label', '取消', ["add_space"]);
+            $("#add_space").html(tr);
+
+            for (var i = 0; i < info.length; i++) {
+                if (info[i]["rich_text"] == "true") {
+                    var E = window.wangEditor
+                    var editor = new E("#new_" + info[i]["column"]);
+                    editor.customConfig.uploadImgShowBase64 = true;
+                    editor.customConfig.showLinkImg = false;
+                    editor.create();
+                    add_list[info[i]["column"]] = editor;
+                    editor.txt.html(result[info[i]['column']]);
+                }
+                else {
+                    document.getElementById("new_" + info[i]["column"]).innerHTML += "<input required value='" + result[info[i]['column']] + "'>";
+                }
+            }
+            console.log(result);
         },
-        data: JSON.stringify(data),
-        success: function () {
-            get_list(entity, "add_item", "delete_by_id", "update_item");
+        error: function (error) {
+        }
+    });
+}
+
+function editor_detail(entity, id) {
+    $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: base_url + entity + "/" + id,
+        xhrFields: {withCredentials: true},
+        success: function (result) {
+            var info = description[entity]["detail"];
+            var add_space = "";
+            for (var i = 0; i < info.length; i++) {
+                add_space += "<div id='add_space_" + info[i] + "'>" + result[info[i]['column']] + "</div>";
+            }
+            add_space += get_a_label('remove_label', '收起', ["add_space"]);
+            $("#add_space").html(add_space);
         },
         error: function () {
         }
     });
 }
 
-function add_rich_text(entity) {
+function editor_add(entity) {
     var info = description[entity]["detail"];
     var data = {};
     for (var j = 0; j < info.length; j++) {
@@ -585,14 +679,14 @@ function add_rich_text(entity) {
         xhrFields: {withCredentials: true},
         data: JSON.stringify(data),
         success: function () {
-            get_list(entity, 'add_rich_text_item', 'delete_by_id', 'update_item', 'get_by_id');
+            table_list(entity, 'editor_add_item', 'table_delete_item', 'table_update_item', 'editor_detail');
         },
         error: function (error) {
         }
     });
 }
 
-function update_rich_text(entity, id) {
+function editor_update(entity, id) {
     var info = description[entity]["detail"];
     var data = {};
     for (var j = 0; j < info.length; j++) {
@@ -606,42 +700,25 @@ function update_rich_text(entity, id) {
         xhrFields: {withCredentials: true},
         data: JSON.stringify(data),
         success: function () {
-            get_list(entity, 'add_rich_text_item', 'delete_by_id', 'update_rich_text_item', 'get_by_id');
-            add_item_cancel("add_space");
+            table_list(entity, 'editor_add_item', 'table_delete_item', 'editor_update_item', 'editor_detail');
+            remove_label("add_space");
         },
         error: function (error) {
         }
     });
 }
 
-function get_by_id(entity, id) {
-    $.ajax({
-        type: "GET",
-        dataType: "json",
-        url: base_url + entity + "/" + id,
-        xhrFields: {withCredentials: true},
-        success: function (result) {
-            var info = description[entity]["detail"];
-            var add_space = "";
-            for (var i = 0; i < info.length; i++) {
-                add_space += "<div id='add_space_" + info[i] + "'>" + result[info[i]['column']] + "</div>";
-            }
-            add_space += get_a_label('add_item_cancel', '收起', ["add_space"]);
-            $("#add_space").html(add_space);
-        },
-        error: function () {
-        }
-    });
-}
 
-function detail_sub_table(entity, id) {
-    $("#sub_table").hide();
+/*------------------------START 对子表格的增删改查操作------------------------*/
+function subTable_list(entity, id) {
+    sub_list = new Array();
     $.ajax({
         type: "GET",
         dataType: "json",
         url: base_url + entity + "/" + id,
         xhrFields: {withCredentials: true},
         success: function (result) {
+            // $("#sub_table").hide();
             var sub_table_title = "";
             for (var i = 0; i < description[entity]["data"].length; i++) {
                 sub_table_title += " " + result[description[entity]["data"][i]["column"]] + " ";
@@ -654,11 +731,12 @@ function detail_sub_table(entity, id) {
             for (var i = 0; i < info.length; i++) {
                 sub_head += "<th>" + info[i]["description"] + "</th>"
             }
-            sub_head += "<th>操作 " + get_a_label("add_sub_table_item", '+', [entity]) + "</th>";
+            sub_head += "<th>操作 " + get_a_label("subTable_add_item", '+', [entity, result["id"]]) + "</th>";
             sub_head += "</tr>";
             var sub_body = "";
             for (var i = 0; i < result[description[entity]["detail_column"]].length; i++) {
                 var id = result["choices"][i]["id"];
+                sub_list.push(id);
                 sub_body += "<tr id='" + entity + "_" + result["id"] + "_" + description[entity]["detail_column"] + "_" + id + "'><td>" + (i + 1) + "</td>";
                 for (var j = 0; j < info.length; j++) {
                     if (info[j]["object_column"] != null) {
@@ -671,11 +749,11 @@ function detail_sub_table(entity, id) {
                         }
                     }
                 }
-                sub_body += "<td>" + get_a_label("delete_sub_table", ' 删除 ', [entity, result["id"], description[entity]["detail_column"], id]) + "</td>";
+                sub_body += "<td>" + get_a_label("subTable_delete", ' 删除 ', [entity, result["id"], description[entity]["detail_column"], id]) + "</td>";
                 sub_body += "</tr>";
             }
 
-
+            $("#sub_tfoot").html("");
             $("#sub_table_title").html(sub_table_title);
             $("#sub_thead").html(sub_head);
             $("#sub_tbody").html(sub_body);
@@ -684,77 +762,129 @@ function detail_sub_table(entity, id) {
     });
 }
 
-function add_sub_table_item(entity) {
+function subTable_add_item(entity, id) {
     var tr = "<tr><td></td>";
     for (var j = 0; j < description[entity]["detail"].length; j++) {
         if (description[entity]["detail"][j]["column"] == "id") {
-            tr += "<td><input required></td>";
+            tr += "<td><input required id='sub_add_input'></td>";
         } else {
             tr += "<td></td>";
         }
     }
-    tr += "<td>" + get_a_label('add_sub_table', '保存', [entity]) + get_a_label('add_item_cancel', '取消', ["sub_tfoot"]) + "</td></tr>";
+    tr += "<td>" + get_a_label('subTable_add', '保存', [entity, id, description[entity]["detail_column"]]) + get_a_label('remove_label', '取消', ["sub_tfoot"]) + "</td></tr>";
     $("#sub_tfoot").html(tr);
 }
 
-function add_sub_table(entity, id, sub_entity, sub_id) {
+function subTable_add(entity, id, sub_entity) {
+    sub_list.push(parseInt($("#sub_add_input").val()));
+    console.log(JSON.stringify(sub_list));
+    console.log(sub_list);
     $.ajax({
-        type: "GET",
+        type: "PUT",
         dataType: "json",
-        url: base_url + sub_entity + "/" + sub_id,
+        url: base_url + entity + "/" + id + "/" + sub_entity,
+        contentType: 'application/json',
+        data: JSON.stringify(sub_list),
         xhrFields: {withCredentials: true},
         success: function () {
-            detail_sub_table(entity, id);
+            subTable_list(entity, id);
         },
         error: function () {
         }
     });
 }
 
-function delete_sub_table(entity, id, sub_entity, sub_id) {
-    document.getElementById(entity + "_" + id + "_" + sub_entity + "_" + sub_id).remove();
-}
-
-function delete_by_id(entity, id) {
-    $.ajax({
-        type: "DELETE",
-        dataType: "json",
-        url: base_url + entity + "/" + id,
-        xhrFields: {withCredentials: true},
-        success: function () {
-            document.getElementById(entity + "_" + id).remove();
-            add_item_cancel("add_space");
-        },
-        error: function (error) {
-        }
-    });
-}
-
-function update_by_id(entity, id) {
-    var info = description[entity]["data"];
-    var old = document.getElementById(entity + "_" + id);
-    var data = {};
-    var tr = "<td>" + old.children[0].innerHTML + "</td>";
-    for (var j = 0; j < info.length; j++) {
-        var old_value = old.children[j + 1].children[0].value;
-        tr += "<td>" + old_value + "</td>";
-        data[info[j]["column"]] = old_value;
+function subTable_delete(entity, id, sub_entity, sub_id) {
+    var index = sub_list.indexOf(parseInt(sub_id));
+    if (index > -1) {
+        sub_list.splice(index, 1);
     }
-    tr += "<td>" + get_a_label('delete_by_id', '删除', [entity, id]) + get_a_label('update_item', '修改', [entity, id]) + "</td>";
-
+    console.log(sub_list);
     $.ajax({
         type: "PUT",
         dataType: "json",
         contentType: 'application/json',
-        url: base_url + entity + "/" + id,
-        data: JSON.stringify(data),
+        url: base_url + entity + "/" + id + "/" + sub_entity,
+        data: JSON.stringify(sub_list),
         xhrFields: {withCredentials: true},
         success: function () {
-            $("#" + entity + "_" + id).html(tr);
+            subTable_list(entity, id);
         },
-        error: function (error) {
+        error: function () {
         }
     });
+}
+
+
+/*------------------------START 考试相关操作------------------------*/
+function exam_start(_, id) {
+    $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: base_url + "exam/" + id,
+        xhrFields: {withCredentials: true},
+        success: function (result) {
+            var start_time = new Date(Date.parse(result["start"].replace(/-/g, "/")));
+            var end_time = new Date(Date.parse(result["start"].replace(/-/g, "/")));
+            end_time.setMinutes(start_time.getMinutes() + 60, start_time.getSeconds(), 0);
+            var now = new Date();
+            if (now < end_time) {
+                if (now < start_time) {
+                    alert("考试未开始");
+                } else {
+                    var test_paper = "";
+                    test_paper += "<div id='sizer'><h1>" + result["name"] + "</h1>";
+                    test_paper += "<h3>" + "试卷：" + result["test_paper"]["name"] + " 考试时长：" + result["duration"] + "分钟" + "</h3>";
+                    for (var i = 0; i < result["test_paper"]["testpaperchoicethrough_set"].length; i++) {
+                        var choices = result["test_paper"]["testpaperchoicethrough_set"][i];
+                        test_paper += "<div><h4>" + (i + 1) + ". " + choices["choice"]["description"] + "()</h4>";
+                        test_paper += "<fieldset class=\"radios has-js\">";
+                        test_paper += "<label class=\"label_radio\" for=\"choice_" + (i + 1) + "_0" + "\"><input id=\"choice_" + (i + 1) + "_0" + "\" type=\"radio\" value=\"0\" name=\"choice_" + (i + 1) + "\"checked/>" + choices["choice"]["choice_a"] + "</label>";
+                        test_paper += "<label class=\"label_radio\" for=\"choice_" + (i + 1) + "_1" + "\"><input id=\"choice_" + (i + 1) + "_1" + "\" type=\"radio\" value=\"0\" name=\"choice_" + (i + 1) + "\"/>" + choices["choice"]["choice_b"] + "</label>";
+                        test_paper += "<label class=\"label_radio\" for=\"choice_" + (i + 1) + "_2" + "\"><input id=\"choice_" + (i + 1) + "_2" + "\" type=\"radio\" value=\"0\" name=\"choice_" + (i + 1) + "\"/>" + choices["choice"]["choice_c"] + "</label>";
+                        test_paper += "<label class=\"label_radio\" for=\"choice_" + (i + 1) + "_3" + "\"><input id=\"choice_" + (i + 1) + "_3" + "\" type=\"radio\" value=\"0\" name=\"choice_" + (i + 1) + "\"/>" + choices["choice"]["choice_d"] + "</label>";
+                        test_paper += "</fieldset></div>";
+                    }
+                    test_paper += get_a_label('exam_submit', '提交', [end_time]);
+                    test_paper += get_a_label('remove_label', '退出', ["add_space"]);
+                    test_paper += "</div>"
+                    $("#add_space").html(test_paper);
+                    $('.label_radio').bind("click", function () {
+                        setupLabel();
+                    });
+                    setupLabel();
+                }
+            }
+            else {
+                alert("考试已经结束");
+            }
+        }
+        ,
+        error: function () {
+        }
+    });
+}
+
+function exam_submit(end_time) {
+    var now = new Date();
+    if (now > end_time) {
+        alert("考试已结束。");
+        remove_label("add_space");
+        return;
+    }
+    var answer = new Array();
+    $('.label_radio input:checked').each(function () {
+        var id = $(this).attr('id');
+        var split_result = id.split("_");
+        answer.push(split_result[2]);
+    });
+    console.log(answer);
+}
+
+/*------------------------START 其他对HTML标签的操作------------------------*/
+
+function remove_label(div) {
+    $("#" + div).html("");
 }
 
 function get_a_label(func, value, args) {
@@ -769,3 +899,15 @@ function get_a_label(func, value, args) {
     a += ")\">" + value + "</a>";
     return a;
 }
+
+function setupLabel() {
+    if ($('.label_radio input').length) {
+        $('.label_radio').each(function () {
+            $(this).removeClass('r_on');
+        });
+        $('.label_radio input:checked').each(function () {
+            $(this).parent('label').addClass('r_on');
+        });
+    }
+}
+

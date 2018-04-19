@@ -27,6 +27,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="assets/css/dataTables.bootstrap.min.css">
     <!-- iCheck -->
     <link rel="stylesheet" href="assets/css/icheck/blue.css">
+    <link rel="stylesheet" href="assets/css/exam.css">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -58,7 +59,7 @@ desired effect
 |---------------------------------------------------------|
 -->
 
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-blue sidebar-mini has-js">
 <div class="wrapper">
     <!-- Main Header -->
     <header class="main-header">
@@ -130,12 +131,12 @@ desired effect
         <section class="sidebar">
             <!-- Sidebar user panel (optional) -->
             <!--<div class="user-panel">-->
-                <!--<div class="pull-left image">-->
-                    <!--<img src="assets/img/user2-160x160.jpg" class="img-circle" alt="User Image">-->
-                <!--</div>-->
-                <!--<div class="pull-left info">-->
-                    <!--<p class="username_p"></p>-->
-                <!--</div>-->
+            <!--<div class="pull-left image">-->
+            <!--<img src="assets/img/user2-160x160.jpg" class="img-circle" alt="User Image">-->
+            <!--</div>-->
+            <!--<div class="pull-left info">-->
+            <!--<p class="username_p"></p>-->
+            <!--</div>-->
             <!--</div>-->
             <!-- Sidebar Menu -->
             <ul class="sidebar-menu" data-widget="tree">
@@ -144,21 +145,24 @@ desired effect
                     <span>3D医院导览</span></a></li>
                 <li class="header">职能学习</li>
                 <!-- Optionally, you can add icons to the links -->
-                <li class="active"><a href="#" onclick="get_list('case',null,null,null,'get_by_id')"><i
+                <li class="active"><a href="#" onclick="table_list('case',null,null,null,'editor_detail')"><i
                         class="fa fa-link"></i>
                     <span>病例学习</span></a></li>
-                <li><a href="#" onclick="get_list('role',null,null,null,'get_by_id')"><i class="fa fa-link"></i> <span>角色扮演</span></a>
+                <li><a href="#" onclick="table_list('role',null,null,null,'editor_detail')"><i class="fa fa-link"></i> <span>角色扮演</span></a>
                 </li>
                 <li class="header">医院信息导览</li>
-                <li><a href="#" onclick="get_list('department')"><i class="fa fa-link"></i><span>科室信息</span></a></li>
-                <li><a href="#" onclick="get_list('medicine')"><i class="fa fa-link"></i><span>药品信息</span></a></li>
-                <li><a href="#" onclick="get_list('assay')"><i class="fa fa-link"></i><span>化验信息</span></a>
+                <li><a href="#" onclick="table_list('department')"><i class="fa fa-link"></i><span>科室信息</span></a></li>
+                <li><a href="#" onclick="table_list('medicine')"><i class="fa fa-link"></i><span>药品信息</span></a></li>
+                <li><a href="#" onclick="table_list('assay')"><i class="fa fa-link"></i><span>化验信息</span></a>
                 </li>
-                <li><a href="#" onclick="get_list('vaccine')"><i class="fa fa-link"></i><span>疫苗信息</span></a>
+                <li><a href="#" onclick="table_list('vaccine')"><i class="fa fa-link"></i><span>疫苗信息</span></a>
                 </li>
-                <li><a href="#" onclick="get_list('inhospital')"><i class="fa fa-link"></i><span>住院信息</span></a></li>
-                <li><a href="#" onclick="get_list('patient')"><i class="fa fa-link"></i><span>宠物信息</span></a>
-                </li>
+                <li><a href="#" onclick="table_list('inhospital')"><i class="fa fa-link"></i><span>住院信息</span></a></li>
+                <li><a href="#" onclick="table_list('patient')"><i class="fa fa-link"></i><span>宠物信息</span></a></li>
+                <li class="header">测试学习</li>
+                <li><a href="#" onclick="table_list('exam',null,null,null,'exam_start')"><i
+                        class="fa fa-link"></i><span>我的考试</span></a></li>
+                <li><a href="#" onclick="table_list('exam')"><i class="fa fa-link"></i><span>我的成绩</span></a></li>
             </ul>
             <!-- /.sidebar-menu -->
         </section>
@@ -177,7 +181,7 @@ desired effect
         <section class="content container-fluid">
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="box">
+                    <div class="box" id="table" hidden>
                         <!-- /.box-header -->
                         <div class="box-body">
                             <table class="table table-bordered table-hover">
@@ -311,7 +315,8 @@ immediately after the control sidebar -->
 <script>
     $(function () {
         get_user_info();
-        // get_list('department', null, null, null);
+        load_hospital_guide();
+        // table_list('department', null, null, null);
     })
 </script>
 </body>
