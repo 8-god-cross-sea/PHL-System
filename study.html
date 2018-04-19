@@ -160,9 +160,9 @@ desired effect
                 <li><a href="#" onclick="table_list('inhospital')"><i class="fa fa-link"></i><span>住院信息</span></a></li>
                 <li><a href="#" onclick="table_list('patient')"><i class="fa fa-link"></i><span>宠物信息</span></a></li>
                 <li class="header">测试学习</li>
-                <li><a href="#" onclick="table_list('exam',null,null,null,'exam_start')"><i
+                <li><a href="#" onclick="table_list('exam/my',null,null,null,'exam_start')"><i
                         class="fa fa-link"></i><span>我的考试</span></a></li>
-                <li><a href="#" onclick="table_list('exam')"><i class="fa fa-link"></i><span>我的成绩</span></a></li>
+                <li><a href="#" onclick="table_list('report/my')"><i class="fa fa-link"></i><span>我的成绩</span></a></li>
             </ul>
             <!-- /.sidebar-menu -->
         </section>
@@ -315,7 +315,7 @@ immediately after the control sidebar -->
 <script>
     $(function () {
         get_user_info();
-        load_hospital_guide();
+        // load_hospital_guide();
         // table_list('department', null, null, null);
     })
 </script>

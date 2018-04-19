@@ -1,5 +1,6 @@
 var base_url = "https://phls.herokuapp.com/api/";
 var add_list = new Array();
+var token = "";
 var sub_list = {};
 var description = {
     "user": {
@@ -284,7 +285,9 @@ var description = {
                     "4": "E"
                 }
             }],
-        "detail_column": "choices"
+        "detail_column": "choices",
+        "detail_source": "testpaper",
+        "detail_operation": "true",
     },
     "exam": {
         "header": "考试信息",
@@ -308,7 +311,65 @@ var description = {
             }, {
                 "column": "start",
                 "description": "考试时间"
-            }]
+            }],
+        "detail_column": "report",
+        "detail_query": "/?exam=",
+        "detail_source": "report",
+    },
+    "exam/my": {
+        "header": "考试信息",
+        "description": "考试相关内容：考试名称、考试时长、考试时间",
+        "data": [
+            // {
+            //     "column": "id",
+            //     "description": "住院单ID"
+            // },
+            {
+                "column": "test_paper",
+                "description": "试卷",
+                "object_column": "name",
+            }, {
+                "column": "name",
+                "description": "考试名称",
+                "is_search": "true",
+            }, {
+                "column": "duration",
+                "description": "考试时长"
+            }, {
+                "column": "start",
+                "description": "考试时间"
+            }],
+        "detail_query": "?eid=",
+    },
+    "report": {
+        "header": "成绩信息",
+        "description": "成绩相关内容：考生姓名、考试、成绩",
+        "data": [],
+        "detail": [{
+            "column": "user",
+            "description": "考生姓名",
+            "object_column": "username",
+        }, {
+            "column": "exam",
+            "description": "考试",
+            "object_column": "name",
+        }, {
+            "column": "score",
+            "description": "成绩"
+        }],
+        "detail_column": "objects",
+        "detail_operation": "false",
+    },
+    "report/my": {
+        "data": [
+            {
+                "column": "exam",
+                "description": "考试",
+                "object_column": "name",
+            }, {
+                "column": "score",
+                "description": "考试分数",
+            }],
     },
     "unity": {
         "header": "3D医院导览",
@@ -333,7 +394,8 @@ var function_name = {
     "editor_update_item": " 修改 ",
     "editor_detail": " 详情 ",
     "subTable_list": " 详情 ",
-    "exam_start": "参加考试"
+    "exam_start": " 参加考试 ",
+    "exam_score_list": " 查看成绩 "
 }
 
 
@@ -509,7 +571,7 @@ function table_update_cancel(entity, id) {
 
 function table_search(entity, add, remove, update, detail) {
     var info = description[entity]["detail"] == null ? description[entity]["data"] : description[entity]["detail"];
-    var query = "";
+    var query = "/";
     for (var i = 0; i < info.length; i++) {
         if (info[i]["is_search"] != null && info[i]["is_search"] == "true") {
             query += info[i]["column"] + "__like=%" + $("#search_input").val() + "%&";
@@ -531,7 +593,7 @@ function table_list(entity, add, remove, update, detail, search) {
         type: "GET",
         crossDomain: true,
         dataType: "json",
-        url: base_url + entity + "/" + query,
+        url: base_url + entity + query,
         xhrFields: {withCredentials: true},
         success: function (result) {
             var thead = "<tr><th>序号</th>";
@@ -547,9 +609,11 @@ function table_list(entity, add, remove, update, detail, search) {
 
             for (var i = 0; i < result["objects"].length; i++) {
                 var id = result["objects"][i]["id"];
+                var detail_source = description[entity]["detail_source"] == null ? entity : description[entity]["detail_source"];
+                var detail_query = description[entity]["detail_query"] == null ? "/" : description[entity]["detail_query"];
                 var remove_operation = remove == null || remove == 'undefined' ? "" : get_a_label(remove, function_name[remove], [entity, id, add, remove, update, detail, search]);
                 var update_operation = update == null || update == 'undefined' ? "" : get_a_label(update, function_name[update], [entity, id]);
-                var detail_operation = detail == null || detail == 'undefined' ? "" : get_a_label(detail, function_name[detail], [entity, id]);
+                var detail_operation = detail == null || detail == 'undefined' ? "" : get_a_label(detail, function_name[detail], [detail_source, detail_query + id]);
                 tbody += "<tr id='" + entity + "_" + id + "'><td>" + (i + 1) + "</td>";
                 for (var j = 0; j < info.length; j++) {
                     if (info[j]["object_column"] != null) {
@@ -645,11 +709,11 @@ function editor_update_item(entity, id) {
     });
 }
 
-function editor_detail(entity, id) {
+function editor_detail(entity, query) {
     $.ajax({
         type: "GET",
         dataType: "json",
-        url: base_url + entity + "/" + id,
+        url: base_url + entity + query,
         xhrFields: {withCredentials: true},
         success: function (result) {
             var info = description[entity]["detail"];
@@ -710,51 +774,48 @@ function editor_update(entity, id) {
 
 
 /*------------------------START 对子表格的增删改查操作------------------------*/
-function subTable_list(entity, id) {
+function subTable_list(entity, query) {
     sub_list = new Array();
     $.ajax({
         type: "GET",
         dataType: "json",
-        url: base_url + entity + "/" + id,
+        url: base_url + entity + query,
         xhrFields: {withCredentials: true},
         success: function (result) {
-            // $("#sub_table").hide();
-            var sub_table_title = "";
-            for (var i = 0; i < description[entity]["data"].length; i++) {
-                sub_table_title += " " + result[description[entity]["data"][i]["column"]] + " ";
-            }
-            sub_table_title += "<span>详情</span>";
-
             var info = description[entity]["detail"];
 
             var sub_head = "<tr><th>序号</th>";
             for (var i = 0; i < info.length; i++) {
                 sub_head += "<th>" + info[i]["description"] + "</th>"
             }
-            sub_head += "<th>操作 " + get_a_label("subTable_add_item", '+', [entity, result["id"]]) + "</th>";
+            if (description[entity]["detail_operation"] == "true") {
+                sub_head += "<th>操作 " + get_a_label("subTable_add_item", '+', [entity, result["id"]]) + "</th>";
+            }
             sub_head += "</tr>";
             var sub_body = "";
             for (var i = 0; i < result[description[entity]["detail_column"]].length; i++) {
-                var id = result["choices"][i]["id"];
+                var detail_column = description[entity]["detail_column"];
+                var id = result[detail_column][i]["id"];
                 sub_list.push(id);
-                sub_body += "<tr id='" + entity + "_" + result["id"] + "_" + description[entity]["detail_column"] + "_" + id + "'><td>" + (i + 1) + "</td>";
+                sub_body += "<tr id='" + entity + "_" + result["id"] + "_" + detail_column + "_" + id + "'><td>" + (i + 1) + "</td>";
                 for (var j = 0; j < info.length; j++) {
                     if (info[j]["object_column"] != null) {
-                        sub_body += "<td>" + result["choices"][i][info[j]["column"]][info[j]["object_column"]] + "</td>";
+                        sub_body += "<td>" + result[detail_column][i][info[j]["column"]][info[j]["object_column"]] + "</td>";
                     } else {
                         if (info[j]["map"] != null) {
-                            sub_body += "<td>" + info[j]["map"][result["choices"][i][info[j]["column"]]] + "</td>";
+                            sub_body += "<td>" + info[j]["map"][result[detail_column][i][info[j]["column"]]] + "</td>";
                         } else {
-                            sub_body += "<td>" + result["choices"][i][info[j]["column"]] + "</td>";
+                            sub_body += "<td>" + result[detail_column][i][info[j]["column"]] + "</td>";
                         }
                     }
                 }
-                sub_body += "<td>" + get_a_label("subTable_delete", ' 删除 ', [entity, result["id"], description[entity]["detail_column"], id]) + "</td>";
+                if (description[entity]["detail_operation"] == "true") {
+                    sub_body += "<td>" + get_a_label("subTable_delete", ' 删除 ', [entity, result["id"], description[entity]["detail_column"], id]) + "</td>";
+                }
                 sub_body += "</tr>";
             }
 
             $("#sub_tfoot").html("");
-            $("#sub_table_title").html(sub_table_title);
             $("#sub_thead").html(sub_head);
             $("#sub_tbody").html(sub_body);
             $("#sub_table").show();
@@ -821,31 +882,38 @@ function exam_start(_, id) {
     $.ajax({
         type: "GET",
         dataType: "json",
-        url: base_url + "exam/" + id,
+        url: base_url + "exam/begin" + id,
         xhrFields: {withCredentials: true},
         success: function (result) {
-            var start_time = new Date(Date.parse(result["start"].replace(/-/g, "/")));
-            var end_time = new Date(Date.parse(result["start"].replace(/-/g, "/")));
-            end_time.setMinutes(start_time.getMinutes() + 60, start_time.getSeconds(), 0);
+            if (result["status"] != null) {
+                alert(result["status"]);
+                return;
+            }
+            var parent = document.getElementById("exam/my_" + 1);
+            var start_time = new Date(Date.parse(parent.children[4].innerHTML.replace(/-/g, "/")));
+            var end_time = new Date(Date.parse(parent.children[4].innerHTML.replace(/-/g, "/")));
+            var duration = parseInt(parent.children[3].innerHTML);
+            end_time.setMinutes(end_time.getMinutes() + duration, end_time.getSeconds(), 0);
             var now = new Date();
             if (now < end_time) {
                 if (now < start_time) {
                     alert("考试未开始");
                 } else {
+                    token = result["token"];
                     var test_paper = "";
-                    test_paper += "<div id='sizer'><h1>" + result["name"] + "</h1>";
-                    test_paper += "<h3>" + "试卷：" + result["test_paper"]["name"] + " 考试时长：" + result["duration"] + "分钟" + "</h3>";
-                    for (var i = 0; i < result["test_paper"]["testpaperchoicethrough_set"].length; i++) {
-                        var choices = result["test_paper"]["testpaperchoicethrough_set"][i];
-                        test_paper += "<div><h4>" + (i + 1) + ". " + choices["choice"]["description"] + "()</h4>";
+                    test_paper += "<div id='sizer'><h1>" + parent.children[2].innerHTML + "</h1>";
+                    test_paper += "<h3>" + "试卷：" + parent.children[1].innerHTML + " 考试时长：" + duration + "分钟" + "</h3>";
+                    for (var i = 0; i < result["problem"].length; i++) {
+                        var choices = result["problem"][i];
+                        test_paper += "<div><h4>" + (i + 1) + ". " + choices["description"] + "()</h4>";
                         test_paper += "<fieldset class=\"radios has-js\">";
-                        test_paper += "<label class=\"label_radio\" for=\"choice_" + (i + 1) + "_0" + "\"><input id=\"choice_" + (i + 1) + "_0" + "\" type=\"radio\" value=\"0\" name=\"choice_" + (i + 1) + "\"checked/>" + choices["choice"]["choice_a"] + "</label>";
-                        test_paper += "<label class=\"label_radio\" for=\"choice_" + (i + 1) + "_1" + "\"><input id=\"choice_" + (i + 1) + "_1" + "\" type=\"radio\" value=\"0\" name=\"choice_" + (i + 1) + "\"/>" + choices["choice"]["choice_b"] + "</label>";
-                        test_paper += "<label class=\"label_radio\" for=\"choice_" + (i + 1) + "_2" + "\"><input id=\"choice_" + (i + 1) + "_2" + "\" type=\"radio\" value=\"0\" name=\"choice_" + (i + 1) + "\"/>" + choices["choice"]["choice_c"] + "</label>";
-                        test_paper += "<label class=\"label_radio\" for=\"choice_" + (i + 1) + "_3" + "\"><input id=\"choice_" + (i + 1) + "_3" + "\" type=\"radio\" value=\"0\" name=\"choice_" + (i + 1) + "\"/>" + choices["choice"]["choice_d"] + "</label>";
+                        test_paper += "<label class=\"label_radio\" for=\"choice_" + (i + 1) + "_0" + "\"><input id=\"choice_" + (i + 1) + "_0" + "\" type=\"radio\" value=\"0\" name=\"choice_" + (i + 1) + "\"checked/>" + choices["choice_a"] + "</label>";
+                        test_paper += "<label class=\"label_radio\" for=\"choice_" + (i + 1) + "_1" + "\"><input id=\"choice_" + (i + 1) + "_1" + "\" type=\"radio\" value=\"0\" name=\"choice_" + (i + 1) + "\"/>" + choices["choice_b"] + "</label>";
+                        test_paper += "<label class=\"label_radio\" for=\"choice_" + (i + 1) + "_2" + "\"><input id=\"choice_" + (i + 1) + "_2" + "\" type=\"radio\" value=\"0\" name=\"choice_" + (i + 1) + "\"/>" + choices["choice_c"] + "</label>";
+                        test_paper += "<label class=\"label_radio\" for=\"choice_" + (i + 1) + "_3" + "\"><input id=\"choice_" + (i + 1) + "_3" + "\" type=\"radio\" value=\"0\" name=\"choice_" + (i + 1) + "\"/>" + choices["choice_d"] + "</label>";
                         test_paper += "</fieldset></div>";
                     }
-                    test_paper += get_a_label('exam_submit', '提交', [end_time]);
+                    test_paper += get_a_label('exam_submit', '提交', [id, end_time]);
                     test_paper += get_a_label('remove_label', '退出', ["add_space"]);
                     test_paper += "</div>"
                     $("#add_space").html(test_paper);
@@ -865,7 +933,7 @@ function exam_start(_, id) {
     });
 }
 
-function exam_submit(end_time) {
+function exam_submit(id, end_time) {
     var now = new Date();
     if (now > end_time) {
         alert("考试已结束。");
@@ -876,9 +944,29 @@ function exam_submit(end_time) {
     $('.label_radio input:checked').each(function () {
         var id = $(this).attr('id');
         var split_result = id.split("_");
-        answer.push(split_result[2]);
+        answer.push(parseInt(split_result[2]));
     });
     console.log(answer);
+    var data = {
+        "token": token,
+        "eid": id,
+        "answers": answer
+    };
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: base_url + "exam/submit",
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        xhrFields: {withCredentials: true},
+        success: function (result) {
+            alert("提交成功，您的得分是：" + result["score"] + "分");
+        }
+    });
+}
+
+function exam_score_list(entity, query) {
+    subTable_list(entity, query);
 }
 
 /*------------------------START 其他对HTML标签的操作------------------------*/
