@@ -42,7 +42,6 @@ function logout() {
         },
         error: function (error) {
             console.log(error);
-            window.location.href = 'error.html';
         }
     });
 }
