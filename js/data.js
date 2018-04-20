@@ -401,6 +401,7 @@ var function_name = {
 
 /*------------------------START 初始化相关操作------------------------*/
 function get_user_info(source) {
+    $("#loading_img").show();
     $.ajax({
         type: "GET",
         crossDomain: true,
@@ -408,6 +409,7 @@ function get_user_info(source) {
         url: base_url + "user/me",
         xhrFields: {withCredentials: true},
         success: function (result) {
+            $("#loading_img").hide();
             if (result["username"] != "admin" && source == "index") {
                 alert("您没有管理员权限");
                 window.location.href = 'study.html';
@@ -416,12 +418,14 @@ function get_user_info(source) {
             }
         },
         error: function () {
+            $("#loading_img").hide();
             window.location.href = 'login.html';
         }
     });
 }
 
-function enter_index(){
+function enter_index() {
+    $("#loading_img").show();
     $.ajax({
         type: "GET",
         crossDomain: true,
@@ -429,6 +433,7 @@ function enter_index(){
         url: base_url + "user/me",
         xhrFields: {withCredentials: true},
         success: function (result) {
+            $("#loading_img").hide();
             if (result["username"] != "admin") {
                 alert("您没有管理员权限");
             } else {
@@ -436,6 +441,7 @@ function enter_index(){
             }
         },
         error: function () {
+            $("#loading_img").hide();
             window.location.href = 'login.html';
         }
     });
@@ -458,6 +464,7 @@ function load_hospital_guide() {
 
 function init(source) {
     get_user_info(source);
+    $("#loading_img").show();
     $.ajax({
         type: "GET",
         crossDomain: true,
@@ -465,6 +472,7 @@ function init(source) {
         url: base_url + "casetype/?",
         xhrFields: {withCredentials: true},
         success: function (result) {
+            $("#loading_img").hide();
             var tr = "";
             for (var i = 0; i < result["objects"].length; i++) {
                 tr += "<li><a href=\"#\" onclick=\"table_list('choice','table_add_item', 'table_delete_item', 'table_update_item',null,'case_type=" + result["objects"][i]["id"] + "')\">" + result["objects"][i]["name"] + "</a></li>";
@@ -472,6 +480,7 @@ function init(source) {
             $("#choice_manage").html(tr);
         },
         error: function () {
+            $("#loading_img").hide();
         }
     });
     $("#search_div").hide();
@@ -510,20 +519,24 @@ function table_update_item(entity, id) {
 }
 
 function table_delete_item(entity, id, add, remove, update, detail, search) {
+    $("#loading_img").show();
     $.ajax({
         type: "DELETE",
         dataType: "json",
         url: base_url + entity + "/" + id,
         xhrFields: {withCredentials: true},
         success: function () {
+            $("#loading_img").hide();
             table_list(entity, add, remove, update, detail, search);
         },
         error: function (error) {
+            $("#loading_img").hide();
         }
     });
 }
 
 function table_add(entity, add, remove, update, detail, search) {
+    $("#loading_img").show();
     var old = document.getElementById("tfoot").children[0];
     var info = description[entity]["data"];
     var data = {};
@@ -540,15 +553,18 @@ function table_add(entity, add, remove, update, detail, search) {
         },
         data: JSON.stringify(data),
         success: function () {
+            $("#loading_img").hide();
             table_list(entity, add, remove, update, detail, search);
         },
         error: function () {
+            $("#loading_img").hide();
             alert("请输入正确的数据格式");
         }
     });
 }
 
 function table_update(entity, id) {
+    $("#loading_img").show();
     var info = description[entity]["data"];
     var old = document.getElementById(entity + "_" + id);
     var data = {};
@@ -574,9 +590,11 @@ function table_update(entity, id) {
         data: JSON.stringify(data),
         xhrFields: {withCredentials: true},
         success: function () {
+            $("#loading_img").hide();
             $("#" + entity + "_" + id).html(tr);
         },
         error: function (error) {
+            $("#loading_img").hide();
             alert("请输入正确的数据格式");
         }
     });
@@ -609,6 +627,7 @@ function table_search(entity, add, remove, update, detail) {
 }
 
 function table_list(entity, add, remove, update, detail, search) {
+    $("#loading_img").show();
     var isOperation = add == null && remove == null && update == null && detail == null ? false : true;
     var add_operation = add == null || add == 'undefined' ? "" : get_a_label(add, function_name[add], [entity, add, remove, update, detail, search]);
     var query = search == null || search == 'undefined' ? "" : "?" + search;
@@ -623,6 +642,7 @@ function table_list(entity, add, remove, update, detail, search) {
         url: base_url + entity + query,
         xhrFields: {withCredentials: true},
         success: function (result) {
+            $("#loading_img").hide();
             var thead = "<tr><th>序号</th>";
             var info = description[entity]["data"];
             for (var i = 0; i < info.length; i++) {
@@ -670,6 +690,7 @@ function table_list(entity, add, remove, update, detail, search) {
             $("#description").html(description[entity]["description"]);
         },
         error: function () {
+            $("#loading_img").hide();
         }
     });
 }
@@ -701,12 +722,14 @@ function editor_add_item(entity) {
 }
 
 function editor_update_item(entity, id) {
+    $("#loading_img").show();
     $.ajax({
         type: "GET",
         dataType: "json",
         url: base_url + entity + "/" + id,
         xhrFields: {withCredentials: true},
         success: function (result) {
+            $("#loading_img").hide();
             var tr = "";
             var info = description[entity]["detail"];
             for (var j = 0; j < info.length; j++) {
@@ -732,17 +755,20 @@ function editor_update_item(entity, id) {
             console.log(result);
         },
         error: function (error) {
+            $("#loading_img").hide();
         }
     });
 }
 
 function editor_detail(entity, query) {
+    $("#loading_img").show();
     $.ajax({
         type: "GET",
         dataType: "json",
         url: base_url + entity + query,
         xhrFields: {withCredentials: true},
         success: function (result) {
+            $("#loading_img").hide();
             var info = description[entity]["detail"];
             var add_space = "";
             for (var i = 0; i < info.length; i++) {
@@ -752,11 +778,13 @@ function editor_detail(entity, query) {
             $("#add_space").html(add_space);
         },
         error: function () {
+            $("#loading_img").hide();
         }
     });
 }
 
 function editor_add(entity) {
+    $("#loading_img").show();
     var info = description[entity]["detail"];
     var data = {};
     for (var j = 0; j < info.length; j++) {
@@ -770,14 +798,17 @@ function editor_add(entity) {
         xhrFields: {withCredentials: true},
         data: JSON.stringify(data),
         success: function () {
+            $("#loading_img").hide();
             table_list(entity, 'editor_add_item', 'table_delete_item', 'table_update_item', 'editor_detail');
         },
         error: function (error) {
+            $("#loading_img").hide();
         }
     });
 }
 
 function editor_update(entity, id) {
+    $("#loading_img").show();
     var info = description[entity]["detail"];
     var data = {};
     for (var j = 0; j < info.length; j++) {
@@ -791,10 +822,12 @@ function editor_update(entity, id) {
         xhrFields: {withCredentials: true},
         data: JSON.stringify(data),
         success: function () {
+            $("#loading_img").hide();
             table_list(entity, 'editor_add_item', 'table_delete_item', 'editor_update_item', 'editor_detail');
             remove_label("add_space");
         },
         error: function (error) {
+            $("#loading_img").hide();
         }
     });
 }
@@ -802,6 +835,7 @@ function editor_update(entity, id) {
 
 /*------------------------START 对子表格的增删改查操作------------------------*/
 function subTable_list(entity, query) {
+    $("#loading_img").show();
     sub_list = new Array();
     $.ajax({
         type: "GET",
@@ -809,6 +843,7 @@ function subTable_list(entity, query) {
         url: base_url + entity + query,
         xhrFields: {withCredentials: true},
         success: function (result) {
+            $("#loading_img").hide();
             var info = description[entity]["detail"];
 
             var sub_head = "<tr><th>序号</th>";
@@ -846,6 +881,9 @@ function subTable_list(entity, query) {
             $("#sub_thead").html(sub_head);
             $("#sub_tbody").html(sub_body);
             $("#sub_table").show();
+        },
+        error: function () {
+            $("#loading_img").hide();
         }
     });
 }
@@ -864,6 +902,7 @@ function subTable_add_item(entity, id) {
 }
 
 function subTable_add(entity, id, sub_entity) {
+    $("#loading_img").show();
     sub_list.push(parseInt($("#sub_add_input").val()));
     console.log(JSON.stringify(sub_list));
     console.log(sub_list);
@@ -875,14 +914,17 @@ function subTable_add(entity, id, sub_entity) {
         data: JSON.stringify(sub_list),
         xhrFields: {withCredentials: true},
         success: function () {
+            $("#loading_img").hide();
             subTable_list(entity, id);
         },
         error: function () {
+            $("#loading_img").hide();
         }
     });
 }
 
 function subTable_delete(entity, id, sub_entity, sub_id) {
+    $("#loading_img").show();
     var index = sub_list.indexOf(parseInt(sub_id));
     if (index > -1) {
         sub_list.splice(index, 1);
@@ -896,9 +938,11 @@ function subTable_delete(entity, id, sub_entity, sub_id) {
         data: JSON.stringify(sub_list),
         xhrFields: {withCredentials: true},
         success: function () {
+            $("#loading_img").hide();
             subTable_list(entity, id);
         },
         error: function () {
+            $("#loading_img").hide();
         }
     });
 }
@@ -906,12 +950,14 @@ function subTable_delete(entity, id, sub_entity, sub_id) {
 
 /*------------------------START 考试相关操作------------------------*/
 function exam_start(_, id) {
+    $("#loading_img").show();
     $.ajax({
         type: "GET",
         dataType: "json",
         url: base_url + "exam/begin" + id,
         xhrFields: {withCredentials: true},
         success: function (result) {
+            $("#loading_img").hide();
             if (result["status"] != null) {
                 alert(result["status"]);
                 return;
@@ -956,6 +1002,7 @@ function exam_start(_, id) {
         }
         ,
         error: function () {
+            $("#loading_img").hide();
         }
     });
 }
@@ -979,6 +1026,7 @@ function exam_submit(id, end_time) {
         "eid": id,
         "answers": answer
     };
+    $("#loading_img").show();
     $.ajax({
         type: "POST",
         dataType: "json",
@@ -987,7 +1035,11 @@ function exam_submit(id, end_time) {
         data: JSON.stringify(data),
         xhrFields: {withCredentials: true},
         success: function (result) {
+            $("#loading_img").hide();
             alert("提交成功，您的得分是：" + result["score"] + "分");
+        },
+        error: function () {
+            $("#loading_img").hide();
         }
     });
 }
