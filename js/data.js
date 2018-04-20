@@ -643,13 +643,13 @@ function table_list(entity, add, remove, update, detail, search) {
         xhrFields: {withCredentials: true},
         success: function (result) {
             $("#loading_img").hide();
-            var thead = "<tr><th>序号</th>";
+            var thead = "<tr><th class='index_th'>序号</th>";
             var info = description[entity]["data"];
             for (var i = 0; i < info.length; i++) {
                 thead += "<th>" + info[i]["description"] + "</th>"
             }
             if (isOperation) {
-                thead += "<th>操作 " + add_operation + "</th>";
+                thead += "<th class='operation_th'>操作 " + add_operation + "</th>";
             }
             thead += "</tr>";
             var tbody = "";
@@ -846,12 +846,12 @@ function subTable_list(entity, query) {
             $("#loading_img").hide();
             var info = description[entity]["detail"];
 
-            var sub_head = "<tr><th>序号</th>";
+            var sub_head = "<tr><th class='index_th'>序号</th>";
             for (var i = 0; i < info.length; i++) {
                 sub_head += "<th>" + info[i]["description"] + "</th>"
             }
             if (description[entity]["detail_operation"] == "true") {
-                sub_head += "<th>操作 " + get_a_label("subTable_add_item", '+', [entity, result["id"]]) + "</th>";
+                sub_head += "<th class='operation_th'>操作 " + get_a_label("subTable_add_item", '+', [entity, result["id"]]) + "</th>";
             }
             sub_head += "</tr>";
             var sub_body = "";
