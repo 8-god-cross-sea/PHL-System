@@ -387,15 +387,15 @@ var description = {
     }
 }
 var function_name = {
-    "table_add_item": "+",
-    "editor_add_item": "+",
-    "table_delete_item": " 删除 ",
-    "table_update_item": " 修改 ",
-    "editor_update_item": " 修改 ",
-    "editor_detail": " 详情 ",
-    "subTable_list": " 详情 ",
-    "exam_start": " 参加考试 ",
-    "exam_score_list": " 查看成绩 "
+    "table_add_item": " | 添加 | ",
+    "editor_add_item": " | 添加 | ",
+    "table_delete_item": " | 删除 | ",
+    "table_update_item": " | 修改 | ",
+    "editor_update_item": " | 修改 | ",
+    "editor_detail": " | 详情 | ",
+    "subTable_list": " | 详情 | ",
+    "exam_start": " | 参加考试 | ",
+    "exam_score_list": " | 查看成绩 | "
 }
 
 
