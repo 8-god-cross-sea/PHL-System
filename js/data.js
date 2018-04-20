@@ -74,13 +74,13 @@ var description = {
                 "object_column": "name",
             }, {
                 "column": "wbc",
-                "description": "基本指标wbc"
+                "description": "白细胞"
             }, {
                 "column": "rbc",
-                "description": "基本指标rbc"
+                "description": "红细胞"
             }, {
                 "column": "plt",
-                "description": "基本指标plt"
+                "description": "血小板计数"
             }]
     },
     "vaccine": {
@@ -400,7 +400,7 @@ var function_name = {
 
 
 /*------------------------START 初始化相关操作------------------------*/
-function get_user_info() {
+function get_user_info(source) {
     $.ajax({
         type: "GET",
         crossDomain: true,
@@ -408,7 +408,32 @@ function get_user_info() {
         url: base_url + "user/me",
         xhrFields: {withCredentials: true},
         success: function (result) {
-            $(".username_p").html(result["username"]);
+            if (result["username"] != "admin" && source == "index") {
+                alert("您没有管理员权限");
+                window.location.href = 'study.html';
+            } else {
+                $(".username_p").html(result["username"]);
+            }
+        },
+        error: function () {
+            window.location.href = 'login.html';
+        }
+    });
+}
+
+function enter_index(){
+    $.ajax({
+        type: "GET",
+        crossDomain: true,
+        dataType: "json",
+        url: base_url + "user/me",
+        xhrFields: {withCredentials: true},
+        success: function (result) {
+            if (result["username"] != "admin") {
+                alert("您没有管理员权限");
+            } else {
+                window.location.href = 'index.html';
+            }
         },
         error: function () {
             window.location.href = 'login.html';
@@ -431,8 +456,8 @@ function load_hospital_guide() {
     $("#description").html(description["unity"]["description"]);
 }
 
-function init() {
-    get_user_info();
+function init(source) {
+    get_user_info(source);
     $.ajax({
         type: "GET",
         crossDomain: true,
@@ -518,6 +543,7 @@ function table_add(entity, add, remove, update, detail, search) {
             table_list(entity, add, remove, update, detail, search);
         },
         error: function () {
+            alert("请输入正确的数据格式");
         }
     });
 }
@@ -551,6 +577,7 @@ function table_update(entity, id) {
             $("#" + entity + "_" + id).html(tr);
         },
         error: function (error) {
+            alert("请输入正确的数据格式");
         }
     });
 }
