@@ -460,8 +460,8 @@ var gameInstance;
 
 function load_hospital_guide() {
     if ($("#gameContainer").length > 0) {
-        $("#unity").show();
         ShowUnity();
+        $("#unity").show();
     } else {
         $("#unity").html("<div id=\"gameContainer\" style=\"width: 960px; height: 600px;\"></div>");
         gameInstance = UnityLoader.instantiate("gameContainer"
@@ -472,7 +472,6 @@ function load_hospital_guide() {
     $("#tfoot").html("");
     $("#header").html(description["unity"]["header"]);
     $("#description").html(description["unity"]["description"]);
-    HideUnity();
 }
 
 function ShowUnity()
@@ -512,8 +511,8 @@ function init(source) {
         }
     });
     $("#search_div").hide();
-    HideUnity();
     $("#table").hide();
+    HideUnity();
     $("#sub_table").hide();
     $("#thead").html("");
     $("#tbody").html("");
@@ -742,10 +741,11 @@ function table_list(entity, add, remove, update, detail, search, page) {
             $("#tbody").html(tbody);
             $("#tfoot").html(tfoot);
             $("#add_space").html("");
+            ShowUnity();
             $("#table").show();
             $("#search_div").show();
-            HideUnity();
             $("#unity").hide();
+            HideUnity();
             $("#sub_table").hide();
             $("#header").html(description[entity]["header"]);
             $("#description").html(description[entity]["description"]);
