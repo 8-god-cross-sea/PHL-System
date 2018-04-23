@@ -456,13 +456,15 @@ function enter_index() {
         }
     });
 }
+var gameInstance;
 
 function load_hospital_guide() {
     if ($("#gameContainer").length > 0) {
         $("#unity").show();
+        ShowUnity();
     } else {
         $("#unity").html("<div id=\"gameContainer\" style=\"width: 960px; height: 600px;\"></div>");
-        UnityLoader.instantiate("gameContainer"
+        gameInstance = UnityLoader.instantiate("gameContainer"
             , "https://3dhospital-1251780400.cos.ap-shanghai.myqcloud.com/3DHospital/Build/game.json", {onProgress: UnityProgress});
     }
     $("#thead").html("");
@@ -470,6 +472,22 @@ function load_hospital_guide() {
     $("#tfoot").html("");
     $("#header").html(description["unity"]["header"]);
     $("#description").html(description["unity"]["description"]);
+    HideUnity();
+}
+
+function ShowUnity()
+{
+    if (gameInstance != null)
+    {
+        gameInstance.SendMessage('Controller','SetEnable');
+    }
+}
+
+function HideUnity(){
+    if (gameInstance != null)
+    {
+        gameInstance.SendMessage('Controller','SetDisable');
+    }
 }
 
 function init(source) {
@@ -494,6 +512,7 @@ function init(source) {
         }
     });
     $("#search_div").hide();
+    HideUnity();
     $("#table").hide();
     $("#sub_table").hide();
     $("#thead").html("");
@@ -725,6 +744,7 @@ function table_list(entity, add, remove, update, detail, search, page) {
             $("#add_space").html("");
             $("#table").show();
             $("#search_div").show();
+            HideUnity();
             $("#unity").hide();
             $("#sub_table").hide();
             $("#header").html(description[entity]["header"]);
