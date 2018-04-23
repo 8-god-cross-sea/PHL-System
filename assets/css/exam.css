@@ -12,3 +12,4 @@ label       { display: block; cursor: pointer; line-height: 20px; padding-bottom
 #loading_img{position: absolute;left: 50%;top: 30%;-webkit-transform: translateX(-50%);transform: translateX(-50%);}
 .operation_th{width:200px}
 .index_th{width:50px}
+.foot_page{float: right}
