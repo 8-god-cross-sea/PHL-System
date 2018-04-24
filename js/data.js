@@ -490,7 +490,6 @@ function ShowUnity()
 {
     if (gameInit && gameInstance != null)
     {
-        alert(1);
         gameInstance.SendMessage('Controller','SetEnable');
     }
 }
