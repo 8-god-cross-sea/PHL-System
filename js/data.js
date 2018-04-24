@@ -457,15 +457,22 @@ function enter_index() {
     });
 }
 var gameInstance;
+var gameInit = false;
 
 function load_hospital_guide() {
     if ($("#gameContainer").length > 0) {
-        ShowUnity();
+        $("#table").show();
         $("#unity").show();
+        ShowUnity();
     } else {
         $("#unity").html("<div id=\"gameContainer\" style=\"width: 960px; height: 600px;\"></div>");
         gameInstance = UnityLoader.instantiate("gameContainer"
-            , "https://3dhospital-1251780400.cos.ap-shanghai.myqcloud.com/3DHospital/Build/game.json", {onProgress: UnityProgress});
+            , "https://3dhospital-1251780400.cos.ap-shanghai.myqcloud.com/3DHospital/Build/game.json", {
+                onProgress: UnityProgress,
+                Module: {
+                    TOTAL_MEMORY: 268435456,
+                    onRuntimeInitialized: OnUnityFinished,
+                },});
     }
     $("#thead").html("");
     $("#tbody").html("");
@@ -474,16 +481,22 @@ function load_hospital_guide() {
     $("#description").html(description["unity"]["description"]);
 }
 
+function OnUnityFinished()
+{
+    gameInit = true;
+}
+
 function ShowUnity()
 {
-    if (gameInstance != null)
+    if (gameInit && gameInstance != null)
     {
+        alert(1);
         gameInstance.SendMessage('Controller','SetEnable');
     }
 }
 
 function HideUnity(){
-    if (gameInstance != null)
+    if (gameInit && gameInstance != null)
     {
         gameInstance.SendMessage('Controller','SetDisable');
     }
@@ -741,7 +754,6 @@ function table_list(entity, add, remove, update, detail, search, page) {
             $("#tbody").html(tbody);
             $("#tfoot").html(tfoot);
             $("#add_space").html("");
-            ShowUnity();
             $("#table").show();
             $("#search_div").show();
             $("#unity").hide();
