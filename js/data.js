@@ -380,6 +380,10 @@ var description = {
         "header": "虚拟宠物医院后台管理系统",
         "description": "后台数据管理 模块包括人员管理、基本结构与功能管理、职能学习管理、病例管理、测试管理",
     },
+    "study_init": {
+        "header": "虚拟宠物医院学习系统",
+        "description": "带你融入宠物医院的工作当中",
+    },
     "default": {
         "add": "table_add_item",
         "remove": "table_delete_item",
@@ -413,6 +417,7 @@ var function_name = {
 /*------------------------START 初始化相关操作------------------------*/
 function get_user_info(source) {
     $("#loading_img").show();
+    var api = source == "index" ? "init" : "study_init";
     $.ajax({
         type: "GET",
         crossDomain: true,
@@ -433,6 +438,8 @@ function get_user_info(source) {
             window.location.href = 'login.html';
         }
     });
+    $("#header").html(description[api]["header"]);
+    $("#description").html(description[api]["description"]);
 }
 
 function enter_index() {
@@ -534,8 +541,6 @@ function init(source) {
     $("#thead").html("");
     $("#tbody").html("");
     $("#tfoot").html("");
-    $("#header").html(description["init"]["header"]);
-    $("#description").html(description["init"]["description"]);
 }
 
 
@@ -556,13 +561,15 @@ function table_add_item(entity, add, remove, update, detail, search) {
     init_laydate();
 }
 
-function table_update_item(entity, id) {
+function table_update_item(entity, id, add, remove, update, detail) {
     var old = document.getElementById(entity + "_" + id);
     var tr = "<td>" + old.children[0].innerHTML + "</td>";
     for (var j = 0; j < description[entity]["data"].length; j++) {
         if (description[entity]["data"][j]["object_column"] == null) {
             if (description[entity]["data"][j]["column"] == "id") {
-                tr += "<td>" + old.children[0].innerHTML + "</td>";
+                tr += "<td>" + old.children[j + 1].innerHTML + "</td>";
+            } else if (description[entity]["data"][j]["type"] == "date") {
+                tr += "<td><input type='text' id='laydate_input' value='" + old.children[j + 1].innerHTML + "'></td>";
             } else {
                 tr += "<td><input value=\"" + old.children[j + 1].innerHTML + "\">" + "</td>";
             }
@@ -570,11 +577,12 @@ function table_update_item(entity, id) {
             tr += "<td>" + old.children[j + 1].innerHTML + "</td>";
         }
     }
-    tr += "<td>" + get_a_label('table_update', [entity, id]) + get_a_label('table_update_cancel', [entity, id]) + "</td>";
+    tr += "<td>" + get_a_label('table_update', [entity, id, add, remove, update, detail]) + get_a_label('table_update_cancel', [entity, id]) + "</td>";
     $("#" + entity + "_" + id).html(tr);
+    init_laydate();
 }
 
-function table_delete_item(entity, id, add, remove, update, detail, search) {
+function table_delete_item(entity, id, add, remove, update, detail) {
     $("#loading_img").show();
     $.ajax({
         type: "DELETE",
@@ -583,7 +591,7 @@ function table_delete_item(entity, id, add, remove, update, detail, search) {
         xhrFields: {withCredentials: true},
         success: function () {
             $("#loading_img").hide();
-            table_list(entity, add, remove, update, detail, search);
+            table_list(entity, add, remove, update, detail);
         },
         error: function (error) {
             $("#loading_img").hide();
@@ -621,7 +629,7 @@ function table_add(entity, add, remove, update, detail, search) {
     });
 }
 
-function table_update(entity, id) {
+function table_update(entity, id, add, remove, update, detail) {
     $("#loading_img").show();
     var info = description[entity]["data"];
     var old = document.getElementById(entity + "_" + id);
@@ -638,7 +646,14 @@ function table_update(entity, id) {
         }
         tr += "<td>" + old_value + "</td>";
     }
-    tr += "<td>" + get_a_label('table_delete_item', [entity, id]) + get_a_label('table_update_item', [entity, id]) + "</td>";
+    var detail_source = description[entity]["detail_source"] == null ? entity : description[entity]["detail_source"];
+    var detail_query = description[entity]["detail_query"] == null ? "/" : description[entity]["detail_query"];
+    var remove_operation = remove == null ? "" : get_a_label(remove, [entity, id, add, remove, update, detail]);
+    var update_operation = update == null ? "" : get_a_label(update, [entity, id, add, remove, update, detail]);
+    var detail_operation = detail == null ? "" : get_a_label(detail, [detail_source, detail_query + id]);
+    tr += "<td>" + remove_operation
+        + update_operation
+        + detail_operation + "</td>";
 
     $.ajax({
         type: "PUT",
@@ -673,9 +688,9 @@ function table_update_cancel(entity, id) {
     old.innerHTML = tr;
 }
 
-function table_search(entity, add, remove, update, detail) {
+function table_search(entity, add, remove, update, detail, search) {
     var info = description[entity]["detail"] == null ? description[entity]["data"] : description[entity]["detail"];
-    var query = "";
+    var query = search != 'null' || search != null ? search + "&" : "";
     for (var i = 0; i < info.length; i++) {
         if (info[i]["is_search"] != null && info[i]["is_search"] == "true") {
             query += info[i]["column"] + "__like=%" + $("#search_input").val() + "%&";
@@ -699,7 +714,7 @@ function table_list(entity, add, remove, update, detail, search, page) {
     var page_query = search == null ? "&limit=" + limit + "&" : "&limit=" + limit + "&";
     page_query += page == null ? "page=1" : "page=" + page;
     page = page == null ? 1 : page;
-    $("#search_button").attr('onclick', 'table_search(\'' + entity + '\',\'' + add + '\',\'' + remove + '\',\'' + update + '\',\'' + detail + '\');');
+    $("#search_button").attr('onclick', 'table_search(\'' + entity + '\',\'' + add + '\',\'' + remove + '\',\'' + update + '\',\'' + detail + '\',\'' + search + '\');');
     if (search == null) {
         $("#search_input").val("");
     }
@@ -730,9 +745,9 @@ function table_list(entity, add, remove, update, detail, search, page) {
                 var id = result["objects"][i]["id"];
                 var detail_source = description[entity]["detail_source"] == null ? entity : description[entity]["detail_source"];
                 var detail_query = description[entity]["detail_query"] == null ? "/" : description[entity]["detail_query"];
-                var remove_operation = remove == null ? "" : get_a_label(remove, [entity, id, add, remove, update, detail, search]);
-                var update_operation = update == null ? "" : get_a_label(update, [entity, id]);
-                var detail_operation = detail == null ? "" : get_a_label(detail, [detail_source, detail_query + id]);
+                var remove_operation = remove == null ? "" : get_a_label(remove, [entity, id, add, remove, update, detail]);
+                var update_operation = update == null ? "" : get_a_label(update, [entity, id, add, remove, update, detail]);
+                var detail_operation = detail == null ? "" : get_a_label(detail, [detail_source, detail_query + id, id]);
                 tbody += "<tr id='" + entity + "_" + id + "'><td>" + ((page - 1) * limit + (i + 1)) + "</td>";
                 for (var j = 0; j < info.length; j++) {
                     if (info[j]["object_column"] != null) {
@@ -777,13 +792,13 @@ function table_list(entity, add, remove, update, detail, search, page) {
 
 
 /*------------------------START 对富文本框的增删改查操作------------------------*/
-function editor_add_item(entity) {
+function editor_add_item(entity, add, remove, update, detail, search) {
     var tr = "";
     var info = description[entity]["detail"];
     for (var j = 0; j < info.length; j++) {
         tr += info[j]["description"] + "<div id='new_" + info[j]["column"] + "'></div>";
     }
-    tr += get_a_label('editor_add', [entity]) + get_a_label('remove_label', ["add_space"]);
+    tr += get_a_label('editor_add', [entity, add, remove, update, detail, search]) + get_a_label('remove_label', ["add_space"]);
     $("#add_space").html(tr);
 
     for (var j = 0; j < info.length; j++) {
@@ -832,7 +847,6 @@ function editor_update_item(entity, id) {
                     document.getElementById("new_" + info[i]["column"]).innerHTML += "<input required value='" + result[info[i]['column']] + "'>";
                 }
             }
-            console.log(result);
         },
         error: function (error) {
             $("#loading_img").hide();
@@ -863,7 +877,7 @@ function editor_detail(entity, query) {
     });
 }
 
-function editor_add(entity) {
+function editor_add(entity, add, remove, update, detail, search) {
     $("#loading_img").show();
     var info = description[entity]["detail"];
     var data = {};
@@ -879,7 +893,7 @@ function editor_add(entity) {
         data: JSON.stringify(data),
         success: function () {
             $("#loading_img").hide();
-            table_list(entity, 'editor_add_item', 'table_delete_item', 'table_update_item', 'editor_detail');
+            table_list(entity, add, remove, update, detail, search);
         },
         error: function (error) {
             $("#loading_img").hide();
@@ -1033,7 +1047,7 @@ function subTable_delete(entity, id, sub_entity, sub_id) {
 
 
 /*------------------------START 考试相关操作------------------------*/
-function exam_start(_, id) {
+function exam_start(_, id, real_id) {
     $("#loading_img").show();
     $.ajax({
         type: "GET",
@@ -1046,7 +1060,7 @@ function exam_start(_, id) {
                 alert(result["status"]);
                 return;
             }
-            var parent = document.getElementById("exam/my_" + id);
+            var parent = document.getElementById("exam/my_" + real_id);
             var start_time = new Date(Date.parse(parent.children[4].innerHTML.replace(/-/g, "/")));
             var end_time = new Date(Date.parse(parent.children[4].innerHTML.replace(/-/g, "/")));
             var duration = parseInt(parent.children[3].innerHTML);
@@ -1070,7 +1084,7 @@ function exam_start(_, id) {
                         test_paper += "<label class=\"label_radio\" for=\"choice_" + (i + 1) + "_3" + "\"><input id=\"choice_" + (i + 1) + "_3" + "\" type=\"radio\" value=\"0\" name=\"choice_" + (i + 1) + "\"/>" + choices["choice_d"] + "</label>";
                         test_paper += "</fieldset></div>";
                     }
-                    test_paper += get_a_label('exam_submit', [id, end_time]);
+                    test_paper += get_a_label('exam_submit', [real_id, end_time]);
                     test_paper += get_a_label('remove_label', ["add_space"]);
                     test_paper += "</div>"
                     $("#add_space").html(test_paper);
@@ -1121,6 +1135,7 @@ function exam_submit(id, end_time) {
         success: function (result) {
             $("#loading_img").hide();
             alert("提交成功，您的得分是：" + result["score"] + "分");
+            table_list('report/my');
         },
         error: function () {
             $("#loading_img").hide();
