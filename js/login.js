@@ -55,3 +55,9 @@ $('.sidebar-menu li').click(function(e) {
     $('.active').removeClass('active');
     $(this).addClass('active')
 })
+
+$(document).on("keydown", '.login-box-body', function(e) {
+    if (e.which == 13) {
+        login();
+    }
+})
