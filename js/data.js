@@ -310,7 +310,8 @@ var description = {
                 "description": "考试时长"
             }, {
                 "column": "start",
-                "description": "考试时间"
+                "description": "考试时间",
+                "type": "date"
             }],
         "detail_column": "report",
         "detail_query": "/?exam=",
@@ -456,6 +457,7 @@ function enter_index() {
         }
     });
 }
+
 var gameInstance;
 var gameInit = false;
 
@@ -472,7 +474,8 @@ function load_hospital_guide() {
                 Module: {
                     TOTAL_MEMORY: 268435456,
                     onRuntimeInitialized: OnUnityFinished,
-                },});
+                },
+            });
     }
     $("#thead").html("");
     $("#tbody").html("");
@@ -481,23 +484,19 @@ function load_hospital_guide() {
     $("#description").html(description["unity"]["description"]);
 }
 
-function OnUnityFinished()
-{
+function OnUnityFinished() {
     gameInit = true;
 }
 
-function ShowUnity()
-{
-    if (gameInit && gameInstance != null)
-    {
-        gameInstance.SendMessage('Controller','SetEnable');
+function ShowUnity() {
+    if (gameInit && gameInstance != null) {
+        gameInstance.SendMessage('Controller', 'SetEnable');
     }
 }
 
-function HideUnity(){
-    if (gameInit && gameInstance != null)
-    {
-        gameInstance.SendMessage('Controller','SetDisable');
+function HideUnity() {
+    if (gameInit && gameInstance != null) {
+        gameInstance.SendMessage('Controller', 'SetDisable');
     }
 }
 
@@ -540,12 +539,15 @@ function table_add_item(entity, add, remove, update, detail, search) {
     for (var j = 0; j < description[entity]["data"].length; j++) {
         if (description[entity]["data"][j]["column"] == "id") {
             tr += "<td></td>";
+        } else if (description[entity]["data"][j]["type"] == "date") {
+            tr += "<td><input type='text' id='laydate_input'></td>";
         } else {
             tr += "<td><input required class='table_add_td_input'></td>";
         }
     }
     tr += "<td>" + get_a_label('table_add', [entity, add, remove, update, detail, search]) + get_a_label('remove_label', ["tfoot"]) + "</td></tr>";
     $("#tfoot").html(tr);
+    init_laydate();
 }
 
 function table_update_item(entity, id) {
@@ -1157,5 +1159,13 @@ function setupLabel() {
             $(this).parent('label').addClass('r_on');
         });
     }
+}
+
+function init_laydate(){
+    //时间选择器
+    laydate.render({
+        elem: '#laydate_input'
+        ,type: 'datetime'
+    });
 }
 
