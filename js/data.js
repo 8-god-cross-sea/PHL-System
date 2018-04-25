@@ -689,8 +689,8 @@ function table_list(entity, add, remove, update, detail, search, page) {
     search = search == "undefined" ? null : search;
     var isOperation = add == null && remove == null && update == null && detail == null ? false : true;
     var add_operation = add == null ? "" : get_a_label(add, [entity, add, remove, update, detail, search]);
-    var query = search == null ? "" : "?" + search;
-    var page_query = search == null ? "?limit=" + limit + "&" : "&limit=" + limit + "&";
+    var query = search == null ? "" : "&" + search;
+    var page_query = search == null ? "&limit=" + limit + "&" : "&limit=" + limit + "&";
     page_query += page == null ? "page=1" : "page=" + page;
     page = page == null ? 1 : page;
     $("#search_button").attr('onclick', 'table_search(\'' + entity + '\',\'' + add + '\',\'' + remove + '\',\'' + update + '\',\'' + detail + '\');');
@@ -701,7 +701,7 @@ function table_list(entity, add, remove, update, detail, search, page) {
         type: "GET",
         crossDomain: true,
         dataType: "json",
-        url: base_url + entity + query + page_query,
+        url: base_url + entity + "?ordering=id" + query + page_query,
         xhrFields: {withCredentials: true},
         success: function (result) {
             $("#loading_img").hide();
@@ -1161,11 +1161,11 @@ function setupLabel() {
     }
 }
 
-function init_laydate(){
+function init_laydate() {
     //时间选择器
     laydate.render({
         elem: '#laydate_input'
-        ,type: 'datetime'
+        , type: 'datetime'
     });
 }
 
