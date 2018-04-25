@@ -59,7 +59,7 @@ desired effect
 |---------------------------------------------------------|
 -->
 
-<body class="hold-transition skin-blue sidebar-mini has-js">
+<body class="hold-transition skin-green sidebar-mini has-js">
 <div class="wrapper">
     <!-- Main Header -->
     <header class="main-header">
@@ -145,7 +145,7 @@ desired effect
                     <span>3D医院导览</span></a></li>
                 <li class="header">职能学习</li>
                 <!-- Optionally, you can add icons to the links -->
-                <li class="active"><a href="#" onclick="table_list('case',null,null,null,'editor_detail')"><i
+                <li><a href="#" onclick="table_list('case',null,null,null,'editor_detail')"><i
                         class="fa fa-link"></i>
                     <span>病例学习</span></a></li>
                 <li><a href="#" onclick="table_list('role',null,null,null,'editor_detail')"><i class="fa fa-link"></i>
@@ -289,7 +289,9 @@ desired effect
 <!-- Add the sidebar's background. This div must be placed
 immediately after the control sidebar -->
 <div class="control-sidebar-bg"></div>
-<img id="loading_img" style="" src="assets/img/loading.gif" hidden>
+<div id="loading_img" hidden>
+    <img style="" src="assets/img/loading.gif">
+</div>
 </div>
 <!-- ./wrapper -->
 <!-- REQUIRED JS SCRIPTS -->

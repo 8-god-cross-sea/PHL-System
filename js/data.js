@@ -387,25 +387,25 @@ var description = {
     }
 }
 var function_name = {
-    "table_add": " | 保存 | ",
-    "table_add_item": " | 添加 | ",
-    "table_delete_item": " | 删除 | ",
-    "table_update": " | 保存 | ",
-    "table_update_item": " | 修改 | ",
-    "table_update_cancel": " | 取消 | ",
-    "editor_add": " | 保存 | ",
-    "editor_add_item": " | 添加 | ",
-    "editor_update": " | 保存 | ",
-    "editor_update_item": " | 修改 | ",
-    "editor_detail": " | 详情 | ",
-    "subTable_add": " | 保存 | ",
-    "subTable_add_item": " | 添加 | ",
-    "subTable_list": " | 详情 | ",
-    "subTable_delete": " | 删除 | ",
-    "exam_start": " | 参加考试 | ",
-    "exam_score_list": " | 查看成绩 | ",
-    "exam_submit": " | 提交 | ",
-    "remove_label": " | 取消 | ",
+    "table_add": '&nbsp;<i class="fa fa-save" aria-hidden="true" style="color: #3c8dbc"></i>&nbsp;',
+    "table_add_item": '&nbsp;<i class="fa fa-plus" aria-hidden="true" style="color: #3c8dbc"></i>&nbsp;',
+    "table_delete_item": '&nbsp;<i class="fa fa-trash-o" aria-hidden="true" style="color: red"></i>&nbsp;',
+    "table_update": '&nbsp;<i class="fa fa-save" aria-hidden="true" style="color: #3c8dbc"></i>&nbsp;',
+    "table_update_item": '&nbsp;<i class="fa fa-pencil" aria-hidden="true" style="color: #3c8dbc"></i>&nbsp;',
+    "table_update_cancel": '&nbsp;<i class="fa fa-close" aria-hidden="true" style="color: red"></i>&nbsp;',
+    "editor_add": '&nbsp;<i class="fa fa-save" aria-hidden="true" style="color: #3c8dbc"></i>&nbsp;',
+    "editor_add_item": '&nbsp;<i class="fa fa-plus" aria-hidden="true" style="color: #3c8dbc"></i>&nbsp;',
+    "editor_update": '&nbsp;<i class="fa fa-save" aria-hidden="true" style="color: #3c8dbc"></i>&nbsp;',
+    "editor_update_item": '&nbsp;<i class="fa fa-pencil" aria-hidden="true" style="color: #3c8dbc"></i>&nbsp;',
+    "editor_detail": " 详情 ",
+    "subTable_add": '&nbsp;<i class="fa fa-save" aria-hidden="true" style="color: #3c8dbc"></i>&nbsp;',
+    "subTable_add_item": '&nbsp;<i class="fa fa-plus" aria-hidden="true" style="color: #3c8dbc"></i>&nbsp;',
+    "subTable_list": " 详情 ",
+    "subTable_delete": '&nbsp;<i class="fa fa-trash-o" aria-hidden="true" style="color: red"></i>&nbsp;',
+    "exam_start": " 参加考试 ",
+    "exam_score_list": " 查看成绩 ",
+    "exam_submit": '&nbsp;<i class="fa fa-paper-plane" aria-hidden="true" style="color: #3c8dbc"></i>&nbsp;',
+    "remove_label": '&nbsp;<font style="margin-top:10px;color: red">取消</font>&nbsp;',
 }
 
 
@@ -502,6 +502,9 @@ function HideUnity(){
 }
 
 function init(source) {
+    $('.sidebar-menu li').css('visibility', 'hidden');
+    $('.user').css('visibility', 'hidden');
+    $('.content-header').css('visibility', 'hidden');
     get_user_info(source);
     $("#loading_img").show();
     $.ajax({
@@ -517,6 +520,9 @@ function init(source) {
                 tr += "<li><a href=\"#\" onclick=\"table_list('choice','table_add_item', 'table_delete_item', 'table_update_item',null,'case_type=" + result["objects"][i]["id"] + "')\">" + result["objects"][i]["name"] + "</a></li>";
             }
             $("#choice_manage").html(tr);
+            $('.sidebar-menu li').css('visibility', 'visible');
+            $('.user').css('visibility', 'visible');
+            $('.content-header').css('visibility', 'visible');
         },
         error: function () {
             $("#loading_img").hide();

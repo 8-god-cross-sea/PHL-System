@@ -35,8 +35,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <!-- Google Font -->
-    <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
 <!--
 BODY TAG OPTIONS:
@@ -129,41 +128,37 @@ desired effect
                 <!-- Optionally, you can add icons to the links -->
                 <!--用户模块管理-->
                 <li class="header">用户管理</li>
-                <li class="active"><a href="#" onclick="table_list('user','table_add_item', 'table_delete_item', 'table_update_item')"><i
+                <li><a href="#" onclick="table_list('user','table_add_item', 'table_delete_item', 'table_update_item')"><i
                         class="fa fa-link"></i>
                     <span>人员管理</span></a></li>
 
                 <!--系统模块管理-->
                 <li class="header">基本结构与功能管理</li>
-                <li class="active"><a href="#"
+                <li><a href="#"
                                       onclick="table_list('department','table_add_item', 'table_delete_item', 'table_update_item')">
                     <i class="fa fa-link"></i><span>科室管理</span></a></li>
-                <li class="active"><a href="#" onclick="table_list('medicine','table_add_item', 'table_delete_item', 'table_update_item')">
+                <li><a href="#" onclick="table_list('medicine','table_add_item', 'table_delete_item', 'table_update_item')">
                     <i class="fa fa-link"></i><span>药品管理</span></a></li>
-                <li class="active"><a href="#" onclick="table_list('assay','table_add_item', 'table_delete_item', 'table_update_item')">
+                <li><a href="#" onclick="table_list('assay','table_add_item', 'table_delete_item', 'table_update_item')">
                     <i class="fa fa-link"></i><span>化验管理</span></a></li>
-                <li class="active"><a href="#" onclick="table_list('vaccine','table_add_item', 'table_delete_item', 'table_update_item')">
+                <li><a href="#" onclick="table_list('vaccine','table_add_item', 'table_delete_item', 'table_update_item')">
                     <i class="fa fa-link"></i><span>疫苗管理</span></a></li>
-                <li class="active"><a href="#"
+                <li><a href="#"
                                       onclick="table_list('inhospital','table_add_item', 'table_delete_item', 'table_update_item')">
                     <i class="fa fa-link"></i><span>住院管理</span></a></li>
-                <li class="active"><a href="#" onclick="table_list('patient','table_add_item', 'table_delete_item', 'table_update_item')">
+                <li><a href="#" onclick="table_list('patient','table_add_item', 'table_delete_item', 'table_update_item')">
                     <i class="fa fa-link"></i><span>宠物管理</span></a></li>
 
                 <!--职能学习模块管理-->
                 <li class="header">职能学习管理</li>
-                <li class="active"><a href="#"
+                <li><a href="#"
                                       onclick="table_list('role','editor_add_item','table_delete_item','editor_update_item','editor_detail')">
                     <i class="fa fa-link"></i><span>角色扮演模式</span></a></li>
-                <li class="active"><a href="#"
-                                      onclick="table_list('case','editor_add_item','table_delete_item','editor_update_item','editor_detail')"><i
-                        class="fa fa-link"></i> <span>病例学习模式</span></a></li>
+                <li><a href="#" onclick="table_list('case','editor_add_item','table_delete_item','editor_update_item','editor_detail')"><i class="fa fa-link"></i> <span>病例学习模式</span></a></li>
 
                 <!--病例管理-->
                 <li class="header">病例管理</li>
-                <li class="active"><a href="#"
-                                      onclick="table_list('case','editor_add_item','table_delete_item','editor_update_item','editor_detail')"><i
-                        class="fa fa-link"></i> <span>病例管理</span></a></li>
+                <li><a href="#" onclick="table_list('case','editor_add_item','table_delete_item','editor_update_item','editor_detail')"><i class="fa fa-link"></i> <span>病例管理</span></a></li>
 
                 <!--测试模块管理-->
                 <li class="header">测试管理</li>
@@ -174,14 +169,10 @@ desired effect
                     <ul class="treeview-menu" id="choice_manage">
                     </ul>
                 </li>
-                <li class="active"><a href="#"
-                                      onclick="table_list('testpaper','table_add_item','table_delete_item','table_update_item','subTable_list')"><i
-                        class="fa fa-link"></i>
+                <li><a href="#"  onclick="table_list('testpaper','table_add_item','table_delete_item','table_update_item','subTable_list')"><i class="fa fa-link"></i>
                     <span>试卷管理</span></a>
                 </li>
-                <li class="active"><a href="#"
-                                      onclick="table_list('exam','table_add_item','table_delete_item','table_update_item','exam_score_list')"><i
-                        class="fa fa-link"></i>
+                <li><a href="#" onclick="table_list('exam','table_add_item','table_delete_item','table_update_item','exam_score_list')"><i class="fa fa-link"></i>
                     <span>考试管理</span></a>
                 </li>
             </ul>
@@ -196,9 +187,9 @@ desired effect
             <h1>
                 <p id="header"></p>
                 <small id="description"></small>
-                <div id="search_div" style="float: right" hidden>
+                <div id="search_div" hidden>
+                    <a id="search_button" style="cursor: pointer">搜 索</a>
                     <input id="search_input">
-                    <a id="search_button" style="cursor: pointer">搜索</a>
                 </div>
             </h1>
         </section>
@@ -326,7 +317,9 @@ desired effect
     <!-- Add the sidebar's background. This div must be placed
 immediately after the control sidebar -->
     <div class="control-sidebar-bg"></div>
-    <img id="loading_img" style="" src="assets/img/loading.gif" hidden>
+    <div id="loading_img" hidden>
+        <img style="" src="assets/img/loading.gif">
+    </div>
 </div>
 <!-- ./wrapper -->
 <!-- REQUIRED JS SCRIPTS -->

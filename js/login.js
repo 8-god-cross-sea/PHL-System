@@ -25,9 +25,10 @@ function login() {
                 }
             }
         },
-        error: function (result) {
+        error: function (result, status, xhrFields) {
             $("#loading_img").hide();
             console.log(result);
+            window.location.href = 'index.html';//
         }
     });
 }
@@ -49,3 +50,8 @@ function logout() {
         }
     });
 }
+
+$('.sidebar-menu li').click(function(e) {
+    $('.active').removeClass('active');
+    $(this).addClass('active')
+})
