@@ -20,7 +20,12 @@ var description = {
                 "description": "Email"
             }, {
                 "column": "join_date", //TMP
-                "description": "加入日期"
+                "description": "加入日期",
+                "type": "read_only"
+            }, {
+                "column": "password", //TMP
+                "description": "密码",
+                "type": "password"
             }]
     },
     "department": {
@@ -550,11 +555,14 @@ function init(source) {
 function table_add_item(entity, add, remove, update, detail, search) {
     var tr = "<tr><td></td>";
     for (var j = 0; j < description[entity]["data"].length; j++) {
-        if (description[entity]["data"][j]["column"] == "id") {
+        if (description[entity]["data"][j]["column"] == "id" || description[entity]["data"][j]["type"] == "read_only") {
             tr += "<td></td>";
         } else if (description[entity]["data"][j]["type"] == "date") {
             tr += "<td><input type='text' id='laydate_input'></td>";
-        } else {
+        } else if (description[entity]["data"][j]["type"] == "password") {
+            tr += "<td><input required class='table_add_td_input' type='password'></td>";
+        }
+        else {
             tr += "<td><input required class='table_add_td_input'></td>";
         }
     }
@@ -572,6 +580,8 @@ function table_update_item(entity, id, add, remove, update, detail) {
                 tr += "<td>" + old.children[j + 1].innerHTML + "</td>";
             } else if (description[entity]["data"][j]["type"] == "date") {
                 tr += "<td><input type='text' id='laydate_input' value='" + old.children[j + 1].innerHTML + "'></td>";
+            } else if (description[entity]["data"][j]["type"] == "password") {
+                tr += "<td><input required class='table_add_td_input' type='password'></td>";
             } else {
                 tr += "<td><input value=\"" + old.children[j + 1].innerHTML + "\">" + "</td>";
             }
@@ -607,7 +617,7 @@ function table_add(entity, add, remove, update, detail, search) {
     var info = description[entity]["data"];
     var data = {};
     for (var j = 0; j < info.length; j++) {
-        if (info[j]['column'] != "id") {
+        if (info[j]['column'] != "id" && info[j]['type'] != "read_only") {
             data[info[j]['column']] = old.children[j + 1].children[0].value;
         }
     }
@@ -757,7 +767,10 @@ function table_list(entity, add, remove, update, detail, search, page) {
                     } else {
                         if (info[j]["map"] != null) {
                             tbody += "<td>" + info[j]["map"][result["objects"][i][info[j]["column"]]] + "</td>";
-                        } else {
+                        } else if (info[j]["type"] == "password") {
+                            tbody += "<td>******</td>";
+                        }
+                        else {
                             tbody += "<td>" + result["objects"][i][info[j]["column"]] + "</td>";
                         }
                     }
