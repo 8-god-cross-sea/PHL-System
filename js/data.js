@@ -813,6 +813,8 @@ function table_list(entity, add, remove, update, detail, search, page) {
 /*------------------------START 对富文本框的增删改查操作------------------------*/
 function editor_add_item(entity, add, remove, update, detail, search) {
     var tr = "";
+    tr += "<div><input type=\"file\" id=\"file\"><button style='margin: 10px' class=\"btn btn-primary btn-lg\" onclick='uploadFile()'>上传</button>";
+    tr += "<button class=\"btn btn-primary btn-lg\" data-toggle=\"modal\" data-target=\"#myModal\" onclick='listFiles()'>已上传内容</button></div>";
     var info = description[entity]["detail"];
     for (var j = 0; j < info.length; j++) {
         tr += info[j]["description"] + "<div id='new_" + info[j]["column"] + "'></div>";
@@ -845,9 +847,11 @@ function editor_update_item(entity, id) {
         success: function (result) {
             $("#loading_img").hide();
             var tr = "";
+            tr += "<div><input type=\"file\" id=\"file\"><button style='margin: 10px' class=\"btn btn-primary btn-lg\" onclick='uploadFile()'>上传</button>";
+            tr += "<button class=\"btn btn-primary btn-lg\" data-toggle=\"modal\" data-target=\"#myModal\" onclick='listFiles()'>已上传内容</button></div>";
             var info = description[entity]["detail"];
             for (var j = 0; j < info.length; j++) {
-                tr += info[j]["description"] + "<div id='new_" + info[j]["column"] + "'></div>";
+                tr += "【"+info[j]["description"]+"】" + "<div id='new_" + info[j]["column"] + "'></div>";
             }
             tr += get_a_label('editor_update', [entity, id]) + get_a_label('remove_label', ["add_space"]);
             $("#add_space").html(tr);
@@ -1248,3 +1252,74 @@ function init_laydate() {
     });
 }
 
+/*------------------------START 上传操作------------------------*/
+'use strict';
+
+// var appServer = 'oss-cn-hangzhou.aliyuncs.com';
+var bucket = 'hartbucket';
+var region = 'oss-cn-hangzhou';
+
+var Buffer = OSS.Buffer;
+var OSS = OSS.Wrapper;
+
+var client = new OSS({
+    region: region,
+    accessKeyId: 'LTAIGu4t9LQnTFMK',
+    accessKeySecret: 'PW6VdQF1N3q6sTCRmOSqUWJRpsuLIE', // I will change this in a minute
+    bucket: bucket
+});
+
+var progress = function (p) {
+    return function (done) {
+        // var bar = document.getElementById('progress-bar');
+        // bar.style.width = Math.floor(p * 100) + '%';
+        // bar.innerHTML = Math.floor(p * 100) + '%';
+        done();
+    }
+};
+
+var uploadFile = function () {
+    if (document.getElementById('file').files.length == 0) {
+        alert("请选择要上传的文件");
+        return;
+    }
+    var file = document.getElementById('file').files[0];
+    var key = file.name;
+    console.log(file.name + ' => ' + key);
+
+    return client.multipartUpload(key, file, {
+        progress: progress
+    }).then(function (res) {
+        console.log('upload success: %j', res);
+        alert("上传成功");
+    });
+};
+
+var listFiles = function () {
+    var table = document.getElementById('list-files-table');
+    console.log('list files');
+
+    return client.list({
+        'max-keys': 100
+    }).then(function (result) {
+        var objects = result.objects.sort(function (a, b) {
+            var ta = new Date(a.lastModified);
+            var tb = new Date(b.lastModified);
+            if (ta > tb) return -1;
+            if (ta < tb) return 1;
+            return 0;
+        });
+        var content = "";
+        for (var i = 0; i < objects.length; i++) {
+            content += "【" + i + "】【name】" + objects[i]["name"] + "【url】&lt;iframe src='" + objects[i]["url"] + "'&gt;&lt;/iframe&gt;</br>";
+        }
+        $(".modal-body").html(content);
+        console.log(objects);
+    });
+};
+
+// window.onload = function () {
+//     document.getElementById('file-button').onclick = function () {
+//         uploadFile();
+//     };
+// };

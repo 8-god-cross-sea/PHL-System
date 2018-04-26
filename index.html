@@ -319,6 +319,26 @@ immediately after the control sidebar -->
     <div id="loading_img" hidden>
         <img style="" src="assets/img/loading.gif">
     </div>
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="myModal" style="z-index: 10000" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        已上传的内容
+                    </h4>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
 </div>
 <!-- ./wrapper -->
 <!-- REQUIRED JS SCRIPTS -->
@@ -337,6 +357,9 @@ immediately after the control sidebar -->
 <script src="assets/js/fastclick.js"></script>
 <script src="assets/js/wangEditor.min.js"></script>
 <script src="assets/js/laydate.js"></script>
+<script src="assets/oss-in-browser/app.js"></script>
+<script src="https://www.promisejs.org/polyfills/promise-6.1.0.js"></script>
+<script type="text/javascript" src="http://gosspublic.alicdn.com/aliyun-oss-sdk.min.js"></script>
 <script src="js/data.js"></script>
 <script src="js/login.js"></script>
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
