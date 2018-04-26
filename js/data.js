@@ -883,7 +883,7 @@ function editor_detail(entity, query) {
         success: function (result) {
             $("#loading_img").hide();
             var info = description[entity]["detail"];
-            var add_space = "";
+            var add_space = "<div style='width: 80%'>";
             for (var i = 0; i < info.length; i++) {
                 if (info[i]['type'] == "title") {
                     add_space += "<h3>【" + result[info[i]['column']] + "】</h3>"
@@ -892,6 +892,7 @@ function editor_detail(entity, query) {
                 }
             }
             add_space += get_a_label('remove_label', ["add_space"]);
+            add_space += "</div>";
             $("#add_space").html(add_space);
         },
         error: function () {
