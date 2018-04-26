@@ -1080,7 +1080,7 @@ function exam_start(_, id, real_id) {
                         var choices = result["problem"][i];
                         test_paper += "<div><h4>" + (i + 1) + ". " + choices["description"] + "()</h4>";
                         test_paper += "<fieldset class=\"radios has-js\">";
-                        test_paper += "<label class=\"label_radio\" for=\"choice_" + (i + 1) + "_0" + "\"><input id=\"choice_" + (i + 1) + "_0" + "\" type=\"radio\" value=\"0\" name=\"choice_" + (i + 1) + "\"checked/>" + choices["choice_a"] + "</label>";
+                        test_paper += "<label class=\"label_radio\" for=\"choice_" + (i + 1) + "_0" + "\"><input id=\"choice_" + (i + 1) + "_0" + "\" type=\"radio\" value=\"0\" name=\"choice_" + (i + 1) + "\"/>" + choices["choice_a"] + "</label>";
                         test_paper += "<label class=\"label_radio\" for=\"choice_" + (i + 1) + "_1" + "\"><input id=\"choice_" + (i + 1) + "_1" + "\" type=\"radio\" value=\"0\" name=\"choice_" + (i + 1) + "\"/>" + choices["choice_b"] + "</label>";
                         test_paper += "<label class=\"label_radio\" for=\"choice_" + (i + 1) + "_2" + "\"><input id=\"choice_" + (i + 1) + "_2" + "\" type=\"radio\" value=\"0\" name=\"choice_" + (i + 1) + "\"/>" + choices["choice_c"] + "</label>";
                         test_paper += "<label class=\"label_radio\" for=\"choice_" + (i + 1) + "_3" + "\"><input id=\"choice_" + (i + 1) + "_3" + "\" type=\"radio\" value=\"0\" name=\"choice_" + (i + 1) + "\"/>" + choices["choice_d"] + "</label>";
