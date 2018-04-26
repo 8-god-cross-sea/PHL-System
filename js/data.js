@@ -362,6 +362,8 @@ var description = {
         "detail_operation": "false",
     },
     "report/my": {
+        "header": "成绩信息",
+        "description": "成绩相关内容：考试、成绩",
         "data": [
             {
                 "column": "exam",
