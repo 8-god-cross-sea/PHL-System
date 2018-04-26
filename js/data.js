@@ -495,6 +495,8 @@ function load_hospital_guide() {
     $("#thead").html("");
     $("#tbody").html("");
     $("#tfoot").html("");
+    $("#add_space").html("");
+    $("#role_space").html("");
     $("#header").html(description["unity"]["header"]);
     $("#description").html(description["unity"]["description"]);
 }
