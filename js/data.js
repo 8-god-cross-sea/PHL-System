@@ -1066,7 +1066,6 @@ function subTable_delete(entity, id, sub_entity, sub_id) {
     });
 }
 
-
 /*------------------------START 考试相关操作------------------------*/
 function exam_start(_, id, real_id) {
     $("#loading_img").show();
