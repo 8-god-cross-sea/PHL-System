@@ -883,7 +883,7 @@ function editor_detail(entity, query) {
         success: function (result) {
             $("#loading_img").hide();
             var info = description[entity]["detail"];
-            var add_space = "<div style='width: 80%'>";
+            var add_space = "<div style='width: 80%;margin: auto'>";
             for (var i = 0; i < info.length; i++) {
                 if (info[i]['type'] == "title") {
                     add_space += "<h3>【" + result[info[i]['column']] + "】</h3>"
