@@ -200,6 +200,7 @@ var description = {
             "column": "name",
             "description": "角色名称",
             "is_search": "true",
+            "type": "title"
         }, {
             "column": "description",
             "description": "描述",
@@ -791,6 +792,7 @@ function table_list(entity, add, remove, update, detail, search, page) {
             $("#tbody").html(tbody);
             $("#tfoot").html(tfoot);
             $("#add_space").html("");
+            $("#role_space").html("");
             $("#table").show();
             $("#search_div").show();
             $("#unity").hide();
@@ -881,7 +883,11 @@ function editor_detail(entity, query) {
             var info = description[entity]["detail"];
             var add_space = "";
             for (var i = 0; i < info.length; i++) {
-                add_space += "<div id='add_space_" + info[i] + "'>" + result[info[i]['column']] + "</div>";
+                if (info[i]['type'] == "title") {
+                    add_space += "<h3>【" + result[info[i]['column']] + "】</h3>"
+                } else {
+                    add_space += "<div id='add_space_" + info[i] + "'>" + result[info[i]['column']] + "</div>";
+                }
             }
             add_space += get_a_label('remove_label', ["add_space"]);
             $("#add_space").html(add_space);
@@ -1160,6 +1166,41 @@ function exam_submit(id, end_time) {
 
 function exam_score_list(entity, query) {
     subTable_list(entity, query);
+}
+
+/*------------------------START 角色扮演相关操作------------------------*/
+
+function role_start() {
+    $("#loading_img").show();
+    $.ajax({
+        type: "GET",
+        crossDomain: true,
+        dataType: "json",
+        url: base_url + "role?ordering=id",
+        xhrFields: {withCredentials: true},
+        success: function (result) {
+            $("#loading_img").hide();
+            var body = "<div>";
+            for (var i = 0; i < result["objects"].length; i++) {
+                var id = result["objects"][i]["id"];
+                body += "<a onclick=\"editor_detail('role','/" + id + "')\">" +
+                    "<img class='role-img' src=\"assets/img/role/" + id + ".jpg\"></a>";
+            }
+            body += "</div>";
+            $("#role_space").html(body);
+            $("#thead").html("");
+            $("#tbody").html("");
+            $("#tfoot").html("");
+            $("#add_space").html("");
+            $("#table").show();
+            $("#search_div").show();
+            $("#unity").hide();
+            HideUnity();
+            $("#sub_table").hide();
+            $("#header").html(description["role"]["header"]);
+            $("#description").html(description["role"]["description"]);
+        }
+    });
 }
 
 /*------------------------START 其他对HTML标签的操作------------------------*/
